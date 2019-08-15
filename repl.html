@@ -1,0 +1,30 @@
+
+<prompt>> <cursor>_</cursor></prompt>
+
+<style>
+  body {
+    font-size: 24pt;
+    margin: .7em;
+    background: aquamarine;
+  }
+  prompt {
+    display: block;
+    color: #ff7bf7;
+    position: fixed;
+    bottom: 0;
+    padding: 0 .7em;
+    margin: 0 -.7em;
+    width: 100%;
+    border-top: 1px solid #ff7bf7;
+    line-height: 1.6em;
+    background: #ff5eed;
+    color: #befbbc;
+  }
+  cursor {
+    height: 100%;
+    display: inline-block;
+    animation: blink;
+    animation: blink 1s step-start .5s infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; }}
+</style>
