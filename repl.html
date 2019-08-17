@@ -31,7 +31,8 @@
 
 <script type='text/javascript' src="bubblescript.js"></script>
 <script type='text/bubblescript'>
-def cursor (document.getElementById "cursor")
+def cursor,
+  (document.getElementById "cursor")
 
 def xoxo cursor.parentNode
 
@@ -39,7 +40,9 @@ def typeChar (fn [c]
   (xoxo.insertBefore
     (document.createTextNode c) cursor))
 
-;window.addEventListener 'keypress (jsfn [e] (typeChar e.key))
-send window 'addEventListener 'keypress (jsfn [e] (typeChar e.key))
+;window.addEventListener 'keypress ,
+;  (jsfn [e] (typeChar e.key))
+send window 'addEventListener,
+  'keypress (jsfn [e] (typeChar e.key))
 7
 </script>

@@ -463,7 +463,8 @@ var bubl = {};
         comment = false,
         count = 0,
         counts = [],
-        depth = 0; // number of open enclosures
+        depth = 0, // number of open enclosures
+        lc = null;
     each(s.split(''), function(c) {
       if(stropen) {
         word += c;
@@ -666,7 +667,7 @@ var bubl = {};
             // stack.push(Space);
           }
 
-          if (c == "\n") {
+          if (c == "\n" && lc != ',') {
             if (depth == 0 && count > 1) {
               // implied list
               word = stack.pop();
@@ -745,6 +746,8 @@ var bubl = {};
             // count += 1;
           }
       }
+      if (c!=' ')
+        lc = c;
     });
 
     if (word) {
