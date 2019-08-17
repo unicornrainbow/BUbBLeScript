@@ -460,7 +460,10 @@ var bubl = {};
         number = /^\d+$/,
         keyword = /^:.+$/,
         stropen = false, // string open flag
-        comment = false;
+        comment = false,
+        count = 0,
+        counts = [],
+        depth = 0; // number of open enclosures
     each(s.split(''), function(c) {
       if(stropen) {
         word += c;
@@ -468,6 +471,7 @@ var bubl = {};
           stropen = false;
           // word = new String(word);
           stack.push(word);
+          count++;
           word = null;
         }
         return;
@@ -480,16 +484,24 @@ var bubl = {};
       switch (c) {
         case '(':
           stack.push(LParen);
+          depth++;
+          counts.push(count);
+          count = 0;
           break;
         case '[':
           stack.push(LBrack);
+          depth++;
+          counts.push(count);
+          count = 0;
           break;
         case "'":
           stack.push(SingleQ);
+          count++;
           break;
         case '"':
           stropen = true;
           word = c;
+          // count++;
           // stack.push(DoubleQ);
           break;
         case ')':
@@ -520,33 +532,41 @@ var bubl = {};
             }
           }
 
-          word = buildGetSend(stack, word);
+          //word = buildGetSend(stack, word);
+          [word, count] = buildGetSend(stack, word, count);
 
           // console.log(stack.last);
           while (stack.peek() == SingleQ) {
             stack.pop()
+            count--;
             word = new Quoted(word);
           }
 
           list = new List(word);
 
           word = stack.pop();
+          count--;
           while(word != LParen) {
             list = list.push(word);
             // skip spaces
             // if(stack.peek() == Space)
             //   stack.pop()
             word = stack.pop();
+            count--;
           }
 
           while (stack.peek() == SingleQ) {
             stack.pop();
+            count--;
             list = new Quoted(list);
           }
 
+          depth--;
+          count = counts.pop();
           word = null;
           stack.push(list);
-          list == null;
+          count++;
+          list = null;
           break;
         case ']':
           if (!word) word = stack.pop();
@@ -572,10 +592,12 @@ var bubl = {};
               word = new Symbol(word);
           }
 
-          word = buildGetSend(stack, word);
+          // word = buildGetSend(stack, word);
+          [word, count] = buildGetSend(stack, word, count);
 
           while (stack.peek() == SingleQ) {
             stack.pop()
+            count--;
             word = new Quoted.new(word)
           }
 
@@ -586,6 +608,7 @@ var bubl = {};
             // if(stack.peek() == Space)
             //   stack.pop()
             word = stack.pop();
+            count--;
           }
           word = null;
 
@@ -596,15 +619,20 @@ var bubl = {};
 
           while (stack.peek() == SingleQ) {
             stack.pop();
+            count--;
             glider = new Quoted(glider);
           }
 
+          depth--;
+          count = counts.pop();
           stack.push(glider);
+          count++;
           glider = null;
           break;
         case ' ':
         case "\n":
-          if (word) {
+        case ',':
+          if (word) { // clear word
             switch (true) {
               case number.test(word):
                 word = parseInt(word);
@@ -619,17 +647,60 @@ var bubl = {};
                 word = new Symbol(word);
             }
 
-            word = buildGetSend(stack, word);
+            // word = buildGetSend(stack, word);
+            // console.log(count)
+
+           [word, count] = buildGetSend(stack, word, count);
+            // console.log(word, count)
+             // console.log(count);
 
             while (stack.peek() == SingleQ) {
               stack.pop()
+              count--;
               word = new Quoted(word)
             }
 
             stack.push(word);
+            count++;
             word = null;
             // stack.push(Space);
           }
+
+          if (c == "\n") {
+            if (depth == 0 && count > 1) {
+              // implied list
+              word = stack.pop();
+              count--;
+
+             //[word, count] = buildGetSend(stack, word, count);
+
+              //while (stack.peek() == SingleQ) {
+              //  stack.pop()
+              //  word = new Quoted(word);
+              //  count--;
+              //}
+
+              list = new List(word);
+
+              while(count > 0) {
+                word = stack.pop();
+                count--;
+                list = list.push(word);
+              }
+
+              word = null;
+              stack.push(list);
+              console.log(list)
+              list = null;
+            // }              v84rf4r5e4i89u=8/88    (c == ' ') {
+            }
+
+            count = 0;
+          }
+
+          // if (c==',')
+            // comma = true;
+
           break;
         case ".":
           if (word) {
@@ -640,8 +711,9 @@ var bubl = {};
                 return;
               case /^.+$/.test(word):
                 stack.push(new Symbol(word));
-                stack.push(Dot);
                 word = null;
+                stack.push(Dot);
+                count+=2;
                 return;
             }
           } else {
@@ -654,6 +726,7 @@ var bubl = {};
               stack.push(new Symbol(word));
               word = null;
               stack.push(Slash);
+              count +=2;
             } else {
               word += c;
             }
@@ -665,10 +738,12 @@ var bubl = {};
           comment = true;
           break;
         default:
-          if (word)
+          if (word) {
             word += c;
-          else
+          } else {
             word = c;
+            // count += 1;
+          }
       }
     });
 
@@ -687,10 +762,12 @@ var bubl = {};
 
       while (stack.peek() == SingleQ) {
         stack.pop();
+        count--;
         word = new Quoted(word);
       }
 
       stack.push(word);
+      count++;
       word = null;
     }
 
@@ -699,7 +776,9 @@ var bubl = {};
 
   var get  = new Symbol('get'),
       send = new Symbol('send');
-  function buildGetSend(stack, word) {
+  // Peeks at the stack, and builds getsend if nesscesary,
+  // otherwise returns word.
+  function buildGetSend(stack, word, count) {
     var list, d;
     if(stack.peek() == Slash ||
        stack.peek() == Dot) {
@@ -709,15 +788,17 @@ var bubl = {};
       }
 
          d = stack.pop();
+         count--;
       word = new Quoted(word);
       list = new List(word);
       while (stack.peek() instanceof Symbol) {
         word = stack.pop();
+        count--;
         word = new Quoted(word);
         list = list.push(word);
-        if (stack.peek() == Dot)
-          stack.pop();
-        else
+        if (stack.peek() == Dot){
+          stack.pop(); count--
+        } else
           break;
       }
 
@@ -736,15 +817,18 @@ var bubl = {};
                 &&  d == Dot) {
         // if (space) stack.push(Space);
         stack.push(send);
+        count++;
         // stack.push(Space);
         var length = list.count();
         if (length == 2) {
           stack.push(list.head);
+          count++;
         } else {
           if (length < 2)
             throw("Is it your birthday?");
           list = list.push(get);
           stack.push(list.shift());
+          count++;
         }
         word = list.last;
       } else {
@@ -753,7 +837,8 @@ var bubl = {};
         word = list;
       }
     }
-    return word;
+    // console.log(count)
+    return [word, count];
   }
 
 
@@ -802,7 +887,7 @@ var bubl = {};
     //(map (fn [a b] bnd[a]) fn.args args)
 
     // console.log('type', fn.args.constructor)
-    console.log(fn.args, args)
+    // console.log(fn.args, args)
     // var q =fn.args.map(function(a,b) {return new Glider(b, new Glider(a));}, args)
     // var q =fn.args.map(function(a,b) {return (glider a b);}, args)
     // var q =fn.args.map(glider, args)

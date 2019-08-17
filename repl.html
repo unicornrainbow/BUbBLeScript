@@ -31,15 +31,15 @@
 
 <script type='text/javascript' src="bubblescript.js"></script>
 <script type='text/bubblescript'>
-;(alert "Petra!")
-(def cursor
-  (document.getElementById "cursor"))
-(def xoxo cursor.parentNode)
+def cursor (document.getElementById "cursor")
 
-(def typeChar (fn [c]
+def xoxo cursor.parentNode
+
+def typeChar (fn [c]
   (xoxo.insertBefore
-    (document.createTextNode c) cursor)))
+    (document.createTextNode c) cursor))
 
-(window.addEventListener 'keypress
-  (jsfn [e] (typeChar e.key)))
+;window.addEventListener 'keypress (jsfn [e] (typeChar e.key))
+send window 'addEventListener 'keypress (jsfn [e] (typeChar e.key))
+7
 </script>
