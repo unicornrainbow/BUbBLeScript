@@ -402,6 +402,7 @@ class SingleQ extends Syntax {};
 class Dot     extends Syntax {};
 class Slash   extends Syntax {};
 class Space   extends Syntax {};
+Dot.toString = function () { return "."; }
 
 function each(c, fn) {
   c.forEach(fn);
@@ -422,7 +423,6 @@ if (Array.prototype.peek == undefined) {
 
 var bubl = {};
 (function() {
-
 
   class Fn {
     constructor (bnd, args, body) {
@@ -464,7 +464,8 @@ var bubl = {};
         count = 0,
         counts = [],
         depth = 0, // number of open enclosures
-        lc = null;
+        lc = null,
+        progress=0;
     each(s.split(''), function(c) {
       if(stropen) {
         word += c;
@@ -534,7 +535,7 @@ var bubl = {};
           }
 
           //word = buildGetSend(stack, word);
-          [word, count] = buildGetSend(stack, word, count);
+          // [word, count] = buildGetSend(stack, word, count, depth);
 
           // console.log(stack.last);
           while (stack.peek() == SingleQ) {
@@ -594,7 +595,7 @@ var bubl = {};
           }
 
           // word = buildGetSend(stack, word);
-          [word, count] = buildGetSend(stack, word, count);
+          // [word, count] = buildGetSend(stack, word, count, depth);
 
           while (stack.peek() == SingleQ) {
             stack.pop()
@@ -651,7 +652,7 @@ var bubl = {};
             // word = buildGetSend(stack, word);
             // console.log(count)
 
-           [word, count] = buildGetSend(stack, word, count);
+           // [word, count] = buildGetSend(stack, word, count, depth);
             // console.log(word, count)
              // console.log(count);
 
@@ -668,35 +669,57 @@ var bubl = {};
           }
 
           if (c == "\n" && lc != ',') {
-            if (depth == 0 && count > 1) {
-              // implied list
-              word = stack.pop();
-              count--;
-
-             //[word, count] = buildGetSend(stack, word, count);
-
-              //while (stack.peek() == SingleQ) {
-              //  stack.pop()
-              //  word = new Quoted(word);
-              //  count--;
-              //}
-
-              list = new List(word);
-
-              while(count > 0) {
+            // if (depth == 0 && count > 1) {
+            if (depth == 0) {
+              let d = stack.length - progress;
+              if (d > 1) {
+                // implied list
                 word = stack.pop();
+                d--;
                 count--;
-                list = list.push(word);
+
+               //[word, count] = buildGetSend(stack, word, count);
+
+                //while (stack.peek() == SingleQ) {
+                //  stack.pop()
+                //  word = new Quoted(word);
+                //  count--;
+                //}
+
+                list = new List(word);
+
+                // while(count > 0) {
+                //   word = stack.pop();
+                //   count--;
+                //   list = list.push(word);
+                // }
+                console.log(d, count)
+                for(;d>0;d--) {
+                  word = stack.pop()
+                //   // console.log(word);
+                //   // list.push(stack.pop());
+                  list=list.push(word);
+                //
+                }
+                // console.log(stack.length)
+                // console.log(list)
+
+                // console.log(stack);
+
+                word = null;
+                stack.push(list);
+                list = null;
+              // }              v84rf4r5e4i89u=8/88    (c == ' ') {
               }
-
-              word = null;
-              stack.push(list);
-              console.log(list)
-              list = null;
-            // }              v84rf4r5e4i89u=8/88    (c == ' ') {
+              progress = stack.length; // cinch
+              // console.log({'progress': progress})
             }
-
-            count = 0;
+            // count = 0;
+            // xstack.push(stack.pop())
+            // while (stack.length!=0){
+              // stack2.push(stack.shift())
+              // console.log(stack.length)
+            // }
           }
 
           // if (c==',')
@@ -735,6 +758,8 @@ var bubl = {};
             word = c;
           }
           break;
+        // case '\':
+
         case ';':
           comment = true;
           break;
@@ -746,7 +771,7 @@ var bubl = {};
             // count += 1;
           }
       }
-      if (c!=' ')
+      if (c!=' '&&c!=';')
         lc = c;
     });
 
@@ -774,14 +799,19 @@ var bubl = {};
       word = null;
     }
 
+    // return stack2;
+    console.log(stack)
+    for(var w of stack) {
+      console.log(w.toString());
+    }
     return stack;
   }
 
   var get  = new Symbol('get'),
       send = new Symbol('send');
-  // Peeks at the stack, and builds getsend if nesscesary,
-  // otherwise returns word.
-  function buildGetSend(stack, word, count) {
+  // Peeks at the stack, and builds get or send
+  // if nesscesary.
+  function buildGetSend(stack, word, count, depth) {
     var list, d;
     if(stack.peek() == Slash ||
        stack.peek() == Dot) {
@@ -792,8 +822,12 @@ var bubl = {};
 
          d = stack.pop();
          count--;
+
+      // quote that word and create a list with it
       word = new Quoted(word);
       list = new List(word);
+
+      // pop off successions of symbols and dots from stack and add to list
       while (stack.peek() instanceof Symbol) {
         word = stack.pop();
         count--;
@@ -805,23 +839,16 @@ var bubl = {};
           break;
       }
 
-      word = list.peek();
+      // unquote the first word in list (last added)
+      word = list.peek();love//lollipop
       list = list.pop();
       list = list.push(word.unquote());
 
-      // save-a-space
-      // var space = null;
-      // if(stack.peek() == Space) {
-      //   space = stack.pop();
-      // }
-
-      // console.log(stack.peek())
-      if(stack.peek() == LParen
-                &&  d == Dot) {
-        // if (space) stack.push(Space);
+      if((stack.peek() == LParen
+                &&  d == Dot) ||
+          (count==0 && depth==0)) {
         stack.push(send);
         count++;
-        // stack.push(Space);
         var length = list.count();
         if (length == 2) {
           stack.push(list.head);
