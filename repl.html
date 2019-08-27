@@ -39,8 +39,15 @@
   ; bs
   ; exec
 
+
+x.y
 def cursor,
   (document.getElementById "cursor")
+
+def cursor,
+  (send document
+    'getElementById
+    "cursor")
 
 def get-id (fn [a]
   (document.getElementById a))
