@@ -435,8 +435,19 @@ var bubl = {};
 
     call(bnd, args) {
       return invoke(this.bnd, this,
-        args.map(function(a){
+        args && args.map(function(a){
           return evl(bnd,a)}))
+    }
+  }
+
+  function fn(bnd, argsk, body) {
+    return function(...argsv) {
+      var bnd;
+      argsv = argsv.map(function(a) { return evl(bnd,a)});
+      bnd = createBnd(bnd, argsk, argsv);
+      return body.each(function(exp){
+        return evl(bnd, exp);
+      });
     }
   }
 
@@ -474,6 +485,7 @@ var bubl = {};
         if (c == '"') {
           stropen = false;
           // word = new String(word);
+          word = word.slice(1,word.length-1);
           stack.push(word);
           count++;
           word = null;
@@ -509,11 +521,6 @@ var bubl = {};
           // stack.push(DoubleQ);
           break;
         case ')':
-          if (!word) word = stack.pop();
-          if (word == LParen) {
-            stack.push(new List)
-            break;
-          }
 
           if (typeof word == "string") {
             switch (true) {
@@ -535,6 +542,13 @@ var bubl = {};
                 word = new Symbol(word);
             }
           }
+
+          if (!word) word = stack.pop();
+          if (word == LParen) {
+            stack.push(new List)
+            break;
+          }
+
 
           // console.log(stack);
           // console.log(register);
@@ -626,27 +640,28 @@ var bubl = {};
           list = null;
           break;
         case ']':
+
+          switch (true) {
+              case number.test(word):
+                word = parseInt(word);
+                break;
+              case /^(\d+)?\.\d+$/.test(word):
+                word = parseFloat(word);
+                break;
+              case keyword.test(word):
+                word = new Keyword(word.substr(1));
+                break;
+              case /^\"(.*)\"$/.test(word): //string
+                word = /^\"(.*)\"$/.exec(word)[1];
+                break;
+              case /^.+$/.test(word):
+                word = new Symbol(word);
+            }
+
           if (!word) word = stack.pop();
           if (word == LBrack) {
             stack.push(new Glider);
             break;
-          }
-
-          switch (true) {
-            case number.test(word):
-              word = parseInt(word);
-              break;
-            case /^(\d+)?\.\d+$/.test(word):
-              word = parseFloat(word);
-              break;
-            case keyword.test(word):
-              word = new Keyword(word.substr(1));
-              break;
-            case /^\"(.*)\"$/.test(word): //string
-              word = /^\"(.*)\"$/.exec(word)[1];
-              break;
-            case /^.+$/.test(word):
-              word = new Symbol(word);
           }
 
           // word = buildGetSend(stack, word);
@@ -700,6 +715,16 @@ var bubl = {};
                 break;
               case keyword.test(word):
                 word = new Keyword(word.substr(1));
+                break;
+              case /^\"(.*)\"$/.test(word):
+                // strip quotes
+                word = /^\"(.*)\"$/.exec(word)[1];
+                break;
+              case word == 'true':
+                word = true;
+                break;
+              case word == 'false':
+                word = false;
                 break;
               case /^.+$/.test(word):
                 word = new Symbol(word);
@@ -1065,8 +1090,8 @@ var bubl = {};
         x = null; y = null;
         break;
       }
-      bnd[x.first] = y.first;
-      x = x.rest; y = y.rest;
+      bnd[x.first] = y && y.first;
+      x = x.rest; y = y && y.rest;
     }
 
 
@@ -1197,6 +1222,25 @@ var bnd = {
     }
   },
 
+  if: function(rainbows) {
+    var turbulance = rainbows.peek(),
+        kango = rainbows.pop(),
+        bnd = this,
+        elves = evl;
+
+    console.log('j',turbulance);
+    console.log('j',elves(bnd,turbulance));
+    if(elves(bnd,turbulance)){
+      return elves(bnd, kango.peek());
+    } else {
+      let bambo = kango.pop();
+      if (bambo)
+        return elves(bnd, bambo.peek());
+      else
+        return false;
+    }
+  },
+
   print: function(vals) {
     var bnd = this;
     // q =
@@ -1234,6 +1278,12 @@ var bnd = {
   },
   "/": function(args){
     return args.reduce(function(a, b){return a/b;});
+  },
+  "=": function(oohs){
+    var bnd=this;
+    var a = evl(bnd, oohs.first);
+    var b = evl(bnd, oohs.rest.first)
+    return a==b;
   },
   alert: function(msg) {
     alert(msg);

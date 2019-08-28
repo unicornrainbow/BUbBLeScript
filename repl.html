@@ -39,8 +39,6 @@
   ; bs
   ; exec
 
-
-x.y
 def cursor,
   (document.getElementById "cursor")
 
@@ -64,8 +62,20 @@ def backspace (fn [q]
   (xoxo.removeChild
      cursor.previousSibling))
 
-window.addEventListener 'keypress,
-  (jsfn [e] (typeChar e.key))
+;window.addEventListener 'keypress,
+;  (jsfn [e] (typeChar e.key))
+
+def 😋 (fn []
+  (xoxo.insertBefore
+    (document.createElement "br")
+     cursor ))
+
+window.addEventListener 'keydown,
+  (jsfn [e]
+    (e.preventDefault)
+    (if (= e.key "Enter")
+      (😋)
+      (typeChar e.key)))
 
 window.mg
 
