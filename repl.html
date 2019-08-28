@@ -72,15 +72,17 @@ def 😋 (fn []
 
 window.addEventListener 'keydown,
   (jsfn [e]
-    (e.preventDefault)
+    (if (= e.key "Backspace")
+      (list
+        (e.preventDefault)
+        (backspace))))
+
+window.addEventListener 'keypress,
+  (jsfn [e]
     (if (= e.key "Enter")
       (😋)
       (typeChar e.key)))
 
 window.mg
 
-;send window 'addEventListener,
-;  'keypress (jsfn [e]
-;    (typeChar e.key))
-7
 </script>
