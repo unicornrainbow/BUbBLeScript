@@ -39,50 +39,50 @@
   ; bs
   ; exec
 
-def cursor,
-  (document.getElementById "cursor")
+    def cursor,
+      (document.getElementById "cursor")
 
-def cursor,
-  (send document
-    'getElementById
-    "cursor")
+        def cursor,
+          (send document
+            'getElementById
+            "cursor")
 
-def get-id (fn [a]
-  (document.getElementById a))
+      def get-id (fn [a]
+        (document.getElementById a))
 
-def cursor (get-id "cursor")
-def xoxo  cursor.parentNode
+    def cursor (get-id "cursor")
+    def xoxo  cursor.parentNode
 
 def typeChar (fn [c]
   (xoxo.insertBefore
     (document.createTextNode c)
      cursor))
 
-def backspace (fn [q]
-  (xoxo.removeChild
-     cursor.previousSibling))
+    def backspace (fn [q]
+      (xoxo.removeChild
+         cursor.previousSibling))
 
-;window.addEventListener 'keypress,
-;  (jsfn [e] (typeChar e.key))
+    ;window.addEventListener 'keypress,
+    ;  (jsfn [e] (typeChar e.key))
 
-def 😋 (fn []
-  (xoxo.insertBefore
-    (document.createElement "br")
-     cursor ))
+    def 😋 (fn []
+      (xoxo.insertBefore
+        (document.createElement "br")
+         cursor ))
 
-window.addEventListener 'keydown,
-  (jsfn [e]
-    (if (= e.key "Backspace")
-      (list
-        (e.preventDefault)
-        (backspace))))
+          window.addEventListener 'keydown,
+            (jsfn [e]
+              (if (= e.key "Backspace")
+                (list
+                  (e.preventDefault)
+                  (backspace))))
 
-window.addEventListener 'keypress,
-  (jsfn [e]
-    (if (= e.key "Enter")
-      (😋)
-      (typeChar e.key)))
+    window.addEventListener 'keypress,
+      (jsfn [e]
+        (if (= e.key "Enter")
+          (😋)
+          (typeChar e.key)))
 
-window.mg
+           window.mg
 
 </script>
