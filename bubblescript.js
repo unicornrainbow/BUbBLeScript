@@ -62,6 +62,7 @@ class List {
 
   join(delimiter=' ') {
     if(this.rest) {
+      console.log(this.first);
       return this.first + delimiter + this.rest.join()
     } else {
       if (typeof this.head == "string") {
@@ -404,6 +405,7 @@ class Slash   extends Syntax {};
 class Space   extends Syntax {};
 
 LParen.toString = function () { return "("; }
+LBrack.toString = function () { return "["; }
 Dot.toString = function () { return "."; }
 
 function each(c, fn) {
@@ -546,6 +548,7 @@ var bubl = {};
           if (!word) word = stack.pop();
           if (word == LParen) {
             stack.push(new List)
+            word = null;
             break;
           }
 
@@ -554,7 +557,7 @@ var bubl = {};
           // console.log(register);
           // let y = progress;
 
-          printRegister(stack, progress);
+          //printRegister(stack, progress);
           console.log(stack.peek());
           console.log(word);
 
@@ -640,27 +643,34 @@ var bubl = {};
           list = null;
           break;
         case ']':
+         if (typeof word == "string") {
+        // if (word) {
+            switch (true) {
+                case number.test(word):
+                  word = parseInt(word);
+                  break;
+                case /^(\d+)?\.\d+$/.test(word):
+                  word = parseFloat(word);
+                  break;
+                case keyword.test(word):
+                  word = new Keyword(word.substr(1));
+                  break;
+                case /^\"(.*)\"$/.test(word): //string
+                  word = /^\"(.*)\"$/.exec(word)[1];
+                  break;
+                case /^.+$/.test(word):
+                  word = new Symbol(word);
+              }
+          }
 
-          switch (true) {
-              case number.test(word):
-                word = parseInt(word);
-                break;
-              case /^(\d+)?\.\d+$/.test(word):
-                word = parseFloat(word);
-                break;
-              case keyword.test(word):
-                word = new Keyword(word.substr(1));
-                break;
-              case /^\"(.*)\"$/.test(word): //string
-                word = /^\"(.*)\"$/.exec(word)[1];
-                break;
-              case /^.+$/.test(word):
-                word = new Symbol(word);
-            }
-
-          if (!word) word = stack.pop();
+          if (!word) {
+             word = stack.pop();
+             count--;
+          }
           if (word == LBrack) {
             stack.push(new Glider);
+            depth--;
+            word = null;
             break;
           }
 
@@ -705,7 +715,8 @@ var bubl = {};
         case ' ':
         case "\n":
         case ',':
-          if (word) { // clear word
+          // if (word) { // clear word
+          if (typeof word == "string") {
             switch (true) {
               case number.test(word):
                 word = parseInt(word);
@@ -746,9 +757,12 @@ var bubl = {};
               word = new Quoted(word)
             }
 
-            stack.push(word);
-            count++;
-            word = null;
+           console.log('d', word);
+            if (word) {
+              stack.push(word);
+              count++;
+              word = null;
+            }
             // stack.push(Space);
           }
 
@@ -862,7 +876,7 @@ var bubl = {};
             // count += 1;
           }
       }
-      if (c!=' '&&c!=';')
+      if (c&&c!=' '&&c!=';')
         lc = c;
     });
 
@@ -1198,6 +1212,16 @@ var bnd = {
     //             }, bnd);
   },
 
+  export: function(crunch) {
+    var ca,nd,y,bnd;
+    bnd=this;
+    [ca,nd,y]=crunch
+      .map(function(q){
+        return evl(bnd,q);
+      }).toArray();
+    return ca[nd]=y;
+  },
+  
   fn: function(args) {
     var bnd = this;
     return new Fn(bnd, args.first, args.rest);
@@ -1221,6 +1245,28 @@ var bnd = {
       return fn.call(bnd, list);
     }
   },
+
+  let: function(hamburgers) {
+    var icecream = hamburgers.first,
+        pineapple = Object.create(this),
+        splash, sunshine,
+        elves=evl;
+
+    while (icecream) {
+      splash = icecream.first;
+      sunshine = icecream.rest;
+      pineapple[splash] = elves(pineapple, sunshine.first);
+      icecream = sunshine.rest;
+    }
+
+    hamburgers.rest.each(function (xoxo){
+      return elves(pineapple, xoxo);
+    })
+  },
+
+  not: function(y) { return !y },
+  and: function(a,b) { return a && b; },
+   or: function(a,b) { return a || b; },
 
   if: function(rainbows) {
     var turbulance = rainbows.peek(),
@@ -1249,7 +1295,11 @@ var bnd = {
     vals.
       map(function(a){return evl(bnd,a)}).
       each(function(value){
-        document.body.append(value)});
+        // var d = document.createElement('div');
+        // value = value.replace(/\\n/g, "<BR>")
+        // d.innerHTML = value;
+
+        document.body.append(value);});
 
     // console.log.apply(this,q);
     // vals.each(document.write)
@@ -1269,8 +1319,11 @@ var bnd = {
     // return args.first+args.next;
     return args.reduce(function(a, b){return a+b;});
   },
-  "-": function(args){
-    return args.reduce(function(a, b){return a-b;});
+  "-": function(aahs){
+    var bnd = this;
+    return aahs.map(function(ah){
+      return evl(bnd, ah);
+    }).reduce(function(a, b){return a-b;});
   },
   "*": function(args){
     // return args.first*args.last;
@@ -1294,6 +1347,26 @@ var bnd = {
       map(function(a){return evl(bnd,a)}).join());
       // each(function(value){
         // document.body.append(value)});
+  },
+  parse: function(args) {
+    return bubbleParse(evl(this, args.first));
+  },
+  evl: function(eeks) {
+    var bnd = this;
+    return evl(this, evl(this, eeks.first)[0]);
+    return eeks.map(function(eek){
+      // console.log(evl(bnd, eek))
+      return evl(bnd, eek);
+      // return evl(bnd, evl(bnd, eek));
+    })
+    // console.log('v', args.first)
+    // return evl(this, args.first);
+  },
+
+  concat: function(eeks) {
+    return eeks.map(function(eek){
+      return evl(bnd, eek);
+    }).join('');
   }
 
   // set: function(key,value) {

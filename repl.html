@@ -1,4 +1,5 @@
 
+
 <prompt>> <cursor id="cursor">_</cursor></prompt>
 
 <style>
@@ -33,11 +34,7 @@
 <script type='text/bubblescript'>
 ;˚mef candy crunch love
 ; td
-  ; indent to continue line w/o pns
-  ; fix bgs
   ; arrows
-  ; bs
-  ; exec
 
     def cursor,
       (document.getElementById "cursor")
@@ -52,11 +49,27 @@
 
     def cursor (get-id "cursor")
     def xoxo  cursor.parentNode
+    def prompt  cursor.parentNode
+
+;def print (fn [a]
+;  (document.body.insertBefore
+;     a prompt))
+
+def br (fn [meow]
+  (document.createElement "br"))
+
+def println (fn [a]
+  (print a (br)))
 
 def typeChar (fn [c]
   (xoxo.insertBefore
     (document.createTextNode c)
      cursor))
+
+def clear (fn []
+  (export  xoxo 'innerHTML "> ")
+  (xoxo.append cursor))
+
 
     def backspace (fn [q]
       (xoxo.removeChild
@@ -65,10 +78,36 @@ def typeChar (fn [c]
     ;window.addEventListener 'keypress,
     ;  (jsfn [e] (typeChar e.key))
 
-    def 😋 (fn []
-      (xoxo.insertBefore
-        (document.createElement "br")
-         cursor ))
+    def 😋 (fn [meow];                 def 😋 (fn []
+      (xoxo.insertBefore;                (xoxo.insertBefore
+        (document.createElement "br");    (document.createElement "br")
+         cursor ));                         cursor ))
+
+     ;def slice (fn []
+      ; ())
+
+     def read,
+       ;(fn [] xoxo.innerText)
+       (fn []
+          (xoxo.innerText.slice 2
+             (- xoxo.innerText.length 1)))
+         ;(let [meow (xoxo.innerText.slice 2
+          ;     (- xoxo.innerText.length 1))]
+            ;  meow))
+
+     def 😋 (fn []
+       (alert (send (read) 'toString)))
+
+      ;  def 🤗🤗 (fn []
+       def 😋 (fn []
+         (let [v (read)]
+            (println v)
+            (print ";=> ")
+            (println (evl (parse v)))
+            (clear)))
+         ;(print ";=> ")
+         ;(println (evl (parse (read)))))
+
 
           window.addEventListener 'keydown,
             (jsfn [e]
@@ -82,6 +121,7 @@ def typeChar (fn [c]
         (if (= e.key "Enter")
           (😋)
           (typeChar e.key)))
+
 
            window.mg
 
