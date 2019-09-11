@@ -1035,7 +1035,14 @@ var bubl = {};
         // console.log(exp, 'it');
         // console.log(exp.toString(), 'i');
         // console.log(exp)
-        return bnd[exp];
+        //return bnd[exp];
+        {
+          let s = bnd[exp];
+          if (s === undefined)
+            return exp;
+          else
+            return s
+        }
       case List:
         var q, args;
         if (exp.first instanceof Symbol) {
@@ -1221,7 +1228,7 @@ var bnd = {
       }).toArray();
     return ca[nd]=y;
   },
-  
+
   fn: function(args) {
     var bnd = this;
     return new Fn(bnd, args.first, args.rest);
@@ -1267,6 +1274,8 @@ var bnd = {
   not: function(y) { return !y },
   and: function(a,b) { return a && b; },
    or: function(a,b) { return a || b; },
+   '>': function(a,b) { return a > b; },
+   '<': function(a,b) { return a < b; },
 
   if: function(rainbows) {
     var turbulance = rainbows.peek(),
@@ -1338,6 +1347,11 @@ var bnd = {
     var b = evl(bnd, oohs.rest.first)
     return a==b;
   },
+  not: function(y) { return !y },
+  and: function(xxx) { return evl(this,xxx.first) && evl(this,xxx.last); },
+   or: function(a,b) { return a || b; },
+   '>': function(xxx) { return evl(this,xxx.first) > evl(this,xxx.last); },
+   '<': function(xxx) { return evl(this,xxx.first) < evl(this,xxx.last); },
   alert: function(msg) {
     alert(msg);
   },

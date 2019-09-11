@@ -7,6 +7,7 @@
     font-size: 24pt;
     margin: .7em;
     background: aquamarine;
+    direction: rtl;
   }
   prompt {
     display: block;
@@ -104,17 +105,35 @@ def clear (fn []
             (println v)
             (print ";=> ")
             (println (evl (parse v)))
+            ;(println (parse v))
             (clear)))
          ;(print ";=> ")
          ;(println (evl (parse (read)))))
 
 
+      def do list
+
+      def arrow-left (fn []
+        (xoxo.insertBefore cursor
+           cursor.previousSibling))
+
+           def arrow-right (fn []
+             (xoxo.insertBefore
+                cursor.nextSibling
+                cursor))
+
           window.addEventListener 'keydown,
             (jsfn [e]
               (if (= e.key "Backspace")
-                (list
-                  (e.preventDefault)
-                  (backspace))))
+                (do (e.preventDefault)
+                     (backspace))
+              (if (= e.key "ArrowRight")
+                (arrow-right)
+              (if (= e.key "ArrowLeft")
+                (arrow-left)))))
+              ;(if (and (> e.keyCode 36)
+              ;          (< e.keyCode 41))
+              ;   (alert "Arrows"))))
 
     window.addEventListener 'keypress,
       (jsfn [e]
