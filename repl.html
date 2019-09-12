@@ -37,70 +37,66 @@
 ; td
   ; arrows
 
-    def cursor,
+    muf cursor,
       (document.getElementById "cursor")
 
-        def cursor,
+        muf cursor,
           (send document
             'getElementById
             "cursor")
 
-      def get-id (fn [a]
+      muf get-id (fn [a]
         (document.getElementById a))
 
-    def cursor (get-id "cursor")
-    def xoxo  cursor.parentNode
-    def prompt  cursor.parentNode
+    muf cursor (get-id "cursor")
+    muf xoxo  cursor.parentNode
+    muf prompt  cursor.parentNode
 
-;def print (fn [a]
+;muf print (fn [a]
 ;  (document.body.insertBefore
 ;     a prompt))
 
-def br (fn [meow]
+muf br (fn [meow]
   (document.createElement "br"))
 
-def println (fn [a]
+muf println (fn [a]
   (print a (br)))
 
-def typeChar (fn [c]
+muf typeChar (fn [c]
   (xoxo.insertBefore
     (document.createTextNode c)
      cursor))
 
-def clear (fn []
+muf clear (fn []
   (export  xoxo 'innerHTML "> ")
   (xoxo.append cursor))
 
 
-    def backspace (fn [q]
+    muf backspace (fn [q]
       (xoxo.removeChild
          cursor.previousSibling))
 
     ;window.addEventListener 'keypress,
     ;  (jsfn [e] (typeChar e.key))
 
-    def 😋 (fn [meow];                 def 😋 (fn []
+    muf 😋 (fn [meow];                 muf 😋 (fn []
       (xoxo.insertBefore;                (xoxo.insertBefore
         (document.createElement "br");    (document.createElement "br")
          cursor ));                         cursor ))
 
-     ;def slice (fn []
-      ; ())
 
-     def read,
-       ;(fn [] xoxo.innerText)
+     muf muff muf
+
+     muff read,
        (fn []
           (xoxo.innerText.slice 2
              (- xoxo.innerText.length 1)))
-         ;(let [meow (xoxo.innerText.slice 2
-          ;     (- xoxo.innerText.length 1))]
-            ;  meow))
 
-     def 😋 (fn []
+     muff 😋 (fn []
        (alert (send (read) 'toString)))
 
       ;  def 🤗🤗 (fn []
-       def 😋 (fn []
+       muff 😋 (fn []
          (let [v (read)]
             (println v)
             (print ";=> ")
@@ -111,13 +107,13 @@ def clear (fn []
          ;(println (evl (parse (read)))))
 
 
-      def do list
+      muf do list
 
-      def arrow-left (fn []
+      muf arrow-left (fn []
         (xoxo.insertBefore cursor
            cursor.previousSibling))
 
-           def arrow-right (fn []
+           muf arrow-right (fn []
              (xoxo.insertBefore
                 cursor.nextSibling
                 cursor))

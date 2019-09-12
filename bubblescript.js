@@ -1168,7 +1168,7 @@ var bnd = {
   window: window,
   document: document,
 
-  def: function(args) {
+  muf: function(args) {
     var a, b, bnd=this;
     a = args.first;
     b = args.rest.first;
@@ -1397,10 +1397,10 @@ var bnd = {
 
 
 bubbleSCRiPT(bnd, "\
-  (def println\n\
+  (muf println\n\
     (fn [a] (print a \"\\n\")))\n\
 \n\
-  (def blank [a & b]\n\
+  (muf blank [a & b]\n\
     (log a)\n\
     (log b))\n\
 \n\
