@@ -33,90 +33,69 @@
 
 <script type='text/javascript' src="bubblescript.js"></script>
 <script type='text/bubblescript'>
-;˚mef candy crunch love
-; td
-  ; arrows
-
     muf cursor,
       (document.getElementById "cursor")
 
-        muf cursor,
-          (send document
-            'getElementById
-            "cursor")
+    muf cursor,
+      (send document
+        'getElementById
+        "cursor")
 
-      muf get-id (fn [a]
-        (document.getElementById a))
+    muf get-id (fn [a]
+      (document.getElementById a))
 
     muf cursor (get-id "cursor")
     muf xoxo  cursor.parentNode
     muf prompt  cursor.parentNode
 
-;muf print (fn [a]
-;  (document.body.insertBefore
-;     a prompt))
+    muf br (fn [meow]
+      (document.createElement "br"))
 
-muf br (fn [meow]
-  (document.createElement "br"))
+    muf println (fn [a]
+      (print a (br)))
 
-muf println (fn [a]
-  (print a (br)))
+    muf typeChar (fn [c]
+      (xoxo.insertBefore
+        (document.createTextNode c)
+         cursor))
 
-muf typeChar (fn [c]
-  (xoxo.insertBefore
-    (document.createTextNode c)
-     cursor))
-
-muf clear (fn []
-  (export  xoxo 'innerHTML "> ")
-  (xoxo.append cursor))
-
+    muf clear (fn []
+      (export  xoxo 'innerHTML "> ")
+      (xoxo.append cursor))
 
     muf backspace (fn [q]
       (xoxo.removeChild
          cursor.previousSibling))
 
-    ;window.addEventListener 'keypress,
-    ;  (jsfn [e] (typeChar e.key))
+     muf 😋 (fn [meow];                 muf 😋 (fn []
+       (xoxo.insertBefore;                (xoxo.insertBefore
+          (document.createElement "br");    (document.createElement "br")
+           cursor ));                         cursor ))
 
-    muf 😋 (fn [meow];                 muf 😋 (fn []
-      (xoxo.insertBefore;                (xoxo.insertBefore
-        (document.createElement "br");    (document.createElement "br")
-         cursor ));                         cursor ))
-
-
-     muf muff muf
+      muf muff muf
 
      muff read,
        (fn []
           (xoxo.innerText.slice 2
              (- xoxo.innerText.length 1)))
 
-     muff 😋 (fn []
-       (alert (send (read) 'toString)))
-
-      ;  def 🤗🤗 (fn []
        muff 😋 (fn []
          (let [v (read)]
             (println v)
             (print ";=> ")
             (println (evl (parse v)))
-            ;(println (parse v))
             (clear)))
-         ;(print ";=> ")
-         ;(println (evl (parse (read)))))
 
+        muf do list
 
-      muf do list
+        muf arrow-left (fn []
+          (xoxo.insertBefore cursor
+             cursor.previousSibling))
 
-      muf arrow-left (fn []
-        (xoxo.insertBefore cursor
-           cursor.previousSibling))
-
-           muf arrow-right (fn []
-             (xoxo.insertBefore
-                cursor.nextSibling
-                cursor))
+         muf arrow-right (fn []
+           (xoxo.insertBefore
+              cursor.nextSibling
+              cursor))
 
           window.addEventListener 'keydown,
             (jsfn [e]
@@ -127,15 +106,12 @@ muf clear (fn []
                 (arrow-right)
               (if (= e.key "ArrowLeft")
                 (arrow-left)))))
-              ;(if (and (> e.keyCode 36)
-              ;          (< e.keyCode 41))
-              ;   (alert "Arrows"))))
 
-    window.addEventListener 'keypress,
-      (jsfn [e]
-        (if (= e.key "Enter")
-          (😋)
-          (typeChar e.key)))
+        window.addEventListener 'keypress,
+          (jsfn [e]
+            (if (= e.key "Enter")
+              (😋)
+              (typeChar e.key)))
 
 
            window.mg
