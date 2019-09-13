@@ -440,6 +440,12 @@ var bubl = {};
         args && args.map(function(a){
           return evl(bnd,a)}))
     }
+
+    toString() {
+      return this.body.push(this.args)
+         .push(new Symbol("fn"))
+         .toString()
+    }
   }
 
   function fn(bnd, argsk, body) {
