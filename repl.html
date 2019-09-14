@@ -33,42 +33,33 @@
 
 <script type='text/javascript' src="bubblescript.js"></script>
 <script type='text/bubblescript'>
-    muf cursor,
-      (document.getElementById "cursor")
-
-    muf cursor,
-      (send document
-        'getElementById
-        "cursor")
-
     muf get-id (fn [a]
       (document.getElementById a))
 
     muf cursor (get-id "cursor")
-    muf xoxo  cursor.parentNode
     muf prompt  cursor.parentNode
 
     muf br (fn [meow]
       (document.createElement "br"))
 
-    muf println (fn [a]
-      (print a (br)))
+    muf println (fn [msg]
+      (print msg (br)))
 
-    muf typeChar (fn [c]
-      (xoxo.insertBefore
-        (document.createTextNode c)
+    muf typeChar (fn [ch]
+      (prompt.insertBefore
+        (document.createTextNode ch)
          cursor))
 
     muf clear (fn []
-      (export  xoxo 'innerHTML "> ")
-      (xoxo.append cursor))
+      (export  prompt 'innerHTML "> ")
+      (prompt.append cursor))
 
     muf backspace (fn [q]
-      (xoxo.removeChild
+      (prompt.removeChild
          cursor.previousSibling))
 
      muf 😋 (fn [meow];                 muf 😋 (fn []
-       (xoxo.insertBefore;                (xoxo.insertBefore
+       (prompt.insertBefore;                (xoxo.insertBefore
           (document.createElement "br");    (document.createElement "br")
            cursor ));                         cursor ))
 
@@ -76,8 +67,8 @@
 
      muff read,
        (fn []
-          (xoxo.innerText.slice 2
-             (- xoxo.innerText.length 1)))
+          (prompt.innerText.slice 2
+             (- prompt.innerText.length 1)))
 
        muff 😋 (fn []
          (let [v (read)]
@@ -89,11 +80,11 @@
         muf do list
 
         muf arrow-left (fn []
-          (xoxo.insertBefore cursor
+          (prompt.insertBefore cursor
              cursor.previousSibling))
 
          muf arrow-right (fn []
-           (xoxo.insertBefore
+           (prompt.insertBefore
               cursor.nextSibling
               cursor))
 
@@ -113,7 +104,6 @@
               (😋)
               (typeChar e.key)))
 
-
-           window.mg
+           window.xoxo
 
 </script>
