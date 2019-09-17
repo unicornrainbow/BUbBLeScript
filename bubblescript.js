@@ -911,6 +911,36 @@ if (Array.prototype.peek == undefined) {
       word = null;
     }
 
+
+    if (depth == 0) {
+      [word,count] = buildGetSend2(stack, word, progress);
+      let d = stack.length - progress;
+      if (d > 1) {
+        word = stack.pop();
+        d--;
+        count--;
+
+        list = new List(word);
+
+        console.log(d, count)
+        for(;d>0;d--) {
+          word = stack.pop()
+          if (word==SingleQ) {
+            let q = new Quoted(list.peek());
+            list =list.pop();
+            list=list.push(q);
+          } else {
+            list=list.push(word);
+          }
+        }
+
+        word = null;
+        stack.push(list);
+        list = null;
+      }
+      progress = stack.length; // cinch
+    }
+
     // return stack2;
     console.log(stack)
     for(var w of stack) {
