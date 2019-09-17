@@ -425,28 +425,29 @@ if (Array.prototype.peek == undefined) {
   // });
 }
 
-var bubl = {};
-(function() {
+            var bubl = {};
 
-  class Fn {
-    constructor (bnd, args, body) {
-      this.bnd  = bnd;
-      this.args = args;
-      this.body = body;
-    }
+            (function() {
 
-    call(bnd, args) {
-      return invoke(this.bnd, this,
-        args && args.map(function(a){
-          return evl(bnd,a)}))
-    }
+              class Fn {
+      constructor (bnd, args, body) {
+          this.bnd  =  bnd;
+           this.args = args;
+          this.body = body;
+                   }
 
-    toString() {
+            call(bnd, args) {
+        return invoke(this.bnd, this,
+      args && args.map(function(a){
+           return evl(bnd,a)}))
+                    }
+
+               toString() {
       return this.body.push(this.args)
-         .push(new Symbol("fn"))
-         .toString()
-    }
-  }
+        .push(new Symbol("fn"))
+             .toString()
+                   }
+                   }
 
   function fn(bnd, argsk, body) {
     return function(...argsv) {

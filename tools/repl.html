@@ -5,22 +5,28 @@
 <style>
   body {
     font-size: 24pt;
-    margin: .7em;
+    margin: 0;
     background: aquamarine;
+    background: deeppink;
+    color: #befbbc;
     direction: rtl;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
   }
   prompt {
     display: block;
     color: #ff7bf7;
-    position: fixed;
+    /* position: fixed; */
     bottom: 0;
     padding: 0 .7em;
-    margin: 0 -.7em;
-    width: 100%;
+    /* margin: 0 -.7em; */
+    /* width: 100%; */
     border-top: 1px solid #ff7bf7;
     line-height: 1.6em;
     background: #ff5eed;
     color: #befbbc;
+    height: 1.6em;
   }
   cursor {
     height: 100%;
@@ -31,7 +37,7 @@
   @keyframes blink { 50% { opacity: 0; }}
 </style>
 
-<script type='text/javascript' src="bubblescript.js"></script>
+<script type='text/javascript' src="../bubblescript.js"></script>
 <script type='text/bubblescript'>
     muf get-id (fn [a]
       (document.getElementById a))
@@ -42,8 +48,17 @@
     muf br (fn [meow]
       (document.createElement "br"))
 
+    muf print (fn [msg]
+      (document.body.insertBefore
+        msg
+        prompt))
+
     muf println (fn [msg]
       (print msg (br)))
+
+    muf println (fn [msg]
+      (print (document.createTextNode msg))
+      (print (br)))
 
     muf typeChar (fn [ch]
       (prompt.insertBefore
@@ -68,7 +83,7 @@
        muff 😋 (fn []
          (let [v (read)]
             (println v)
-            (print ";=> ")
+            (print (document.createTextNode ";=> "))
             (println (evl (parse v)))
             (clear)))
 
