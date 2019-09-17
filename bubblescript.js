@@ -429,12 +429,13 @@ if (Array.prototype.peek == undefined) {
 
             (function() {
 
-              class Fn {
-      constructor (bnd, args, body) {
-          this.bnd  =  bnd;
-           this.args = args;
-          this.body = body;
-                   }
+              class Fn {  ⤵︎
+      (constructor [bnd args body]
+          this.bnd  =  bnd ;
+           this.args = args ;
+          this.body = body ;)
+
+               😘🤓😝
 
             call(bnd, args) {
         return invoke(this.bnd, this,
