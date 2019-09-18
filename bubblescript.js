@@ -62,7 +62,6 @@ class List {
 
   join(delimiter=' ') {
     if(this.rest) {
-      console.log(this.first);
       return this.first + delimiter + this.rest.join()
     } else {
       if (typeof this.head == "string") {
@@ -265,13 +264,11 @@ class Glider {
     //       return q ? q.first : q})));
     // }
 
-    // console.log('xoxo', this.head)
 
     var result = new Glider(fn(this.first,
       ...aux.map(function(q) {
         return q ? q.first : q})));
 
-    // console.log(result, 'cat')
     if(!this.rest)
       return result;
 
@@ -282,7 +279,6 @@ class Glider {
       var c = new Glider(b.peek()); //b.peek());
       b = b.pop();
 
-      // console.log(b, 'taco')
       while(b) {
         c = c.push(b.peek());
         b = b.pop();
@@ -469,7 +465,6 @@ if (Array.prototype.peek == undefined) {
     }
 
     call(bnd, args) {
-      // console.log(invoke(bnd,this,args).toString());
       return evl(this.bnd, invoke(bnd,this,args));
     }
   }
@@ -547,7 +542,6 @@ if (Array.prototype.peek == undefined) {
                 word = /^\"(.*)\"$/.exec(word)[1];
                 break;
               case /^.+$/.test(word):
-                // console.log(word);
                 word = new Symbol(word);
             }
           }
@@ -560,13 +554,9 @@ if (Array.prototype.peek == undefined) {
           }
 
 
-          // console.log(stack);
-          // console.log(register);
           // let y = progress;
 
           //printRegister(stack, progress);
-          console.log(stack.peek());
-          console.log(word);
 
 
 
@@ -616,7 +606,6 @@ if (Array.prototype.peek == undefined) {
           // }
 
 
-          // console.log(stack.last);
           while (stack.peek() == SingleQ) {
             stack.pop()
             count--;
@@ -749,14 +738,11 @@ if (Array.prototype.peek == undefined) {
             }
 
             // word = buildGetSend(stack, word);
-            // console.log(count)
 
            [word, count] = buildGetSend(stack, word, stack.length-progress, depth);
 
           if (depth>0)
             // [word, count] = buildGetSend(stack, word, stack.length-progress, depth);
-            // console.log(word, count)
-             // console.log(count);
 
             while (stack.peek() == SingleQ) {
               stack.pop()
@@ -764,7 +750,6 @@ if (Array.prototype.peek == undefined) {
               word = new Quoted(word)
             }
 
-           console.log('d', word);
             if (word) {
               stack.push(word);
               count++;
@@ -799,10 +784,8 @@ if (Array.prototype.peek == undefined) {
                 //   count--;
                 //   list = list.push(word);
                 // }
-                console.log(d, count)
                 for(;d>0;d--) {
                   word = stack.pop()
-                //   // console.log(word);
                 //   // list.push(stack.pop());
                   if (word==SingleQ) {
                     let q = new Quoted(list.peek());
@@ -813,10 +796,6 @@ if (Array.prototype.peek == undefined) {
                   }
                 //
                 }
-                // console.log(stack.length)
-                // console.log(list)
-
-                // console.log(stack);
 
                 word = null;
                 stack.push(list);
@@ -824,13 +803,11 @@ if (Array.prototype.peek == undefined) {
               // }              v84rf4r5e4i89u=8/88    (c == ' ') {
               }
               progress = stack.length; // cinch
-              // console.log({'progress': progress})
             }
             // count = 0;
             // xstack.push(stack.pop())
             // while (stack.length!=0){
               // stack2.push(stack.shift())
-              // console.log(stack.length)
             // }
           }
 
@@ -922,7 +899,6 @@ if (Array.prototype.peek == undefined) {
 
         list = new List(word);
 
-        console.log(d, count)
         for(;d>0;d--) {
           word = stack.pop()
           if (word==SingleQ) {
@@ -942,10 +918,9 @@ if (Array.prototype.peek == undefined) {
     }
 
     // return stack2;
-    console.log(stack)
-    for(var w of stack) {
-      console.log(w.toString());
-    }
+    // for(var w of stack) {
+    //   console.log(w.toString());
+    // }
     return stack;
   }
 
@@ -1010,7 +985,6 @@ if (Array.prototype.peek == undefined) {
         }
         word = list.last;
       } else {
-        // console.log('z',count)
         if (count>0) {
           // if (space) stack.push(Space);
           list = list.push(get);
@@ -1028,7 +1002,6 @@ if (Array.prototype.peek == undefined) {
         }
       }
     }
-    // console.log(count)
     return [word, count];
   }
 
@@ -1043,7 +1016,6 @@ if (Array.prototype.peek == undefined) {
       b.push(stack.pop());
     }
     a=b.pop();
-    console.log('xyz', a)
     if (b.peek()==Dot){
       b.pop();
       e=b.pop();
@@ -1069,9 +1041,6 @@ if (Array.prototype.peek == undefined) {
   function evl(bnd, exp) {
     switch (exp.constructor) {
       case Symbol:
-        // console.log(exp, 'it');
-        // console.log(exp.toString(), 'i');
-        // console.log(exp)
         //return bnd[exp];
         {
           let s = bnd[exp];
@@ -1083,7 +1052,6 @@ if (Array.prototype.peek == undefined) {
       case List:
         var q, args;
         if (exp.first instanceof Symbol) {
-          console.log(exp.first);
           q = evl(bnd, exp.first);
           if (q==undefined) {
             throw("Could not find fn or macro named \"" + exp.first + "\"");
@@ -1098,7 +1066,6 @@ if (Array.prototype.peek == undefined) {
         return exp.map(function(a) {evl(bnd,a)});
       case Fn:
       case Macro:
-        // console.log(exp)
         return exp.body.each(function(exp){
           return evl(bnd,exp);
         });
@@ -1117,8 +1084,6 @@ if (Array.prototype.peek == undefined) {
     //fn.args.map(vector args)
     //(map (fn [a b] bnd[a]) fn.args args)
 
-    // console.log('type', fn.args.constructor)
-    // console.log(fn.args, args)
     // var q =fn.args.map(function(a,b) {return new Glider(b, new Glider(a));}, args)
     // var q =fn.args.map(function(a,b) {return (glider a b);}, args)
     // var q =fn.args.map(glider, args)
@@ -1137,7 +1102,6 @@ if (Array.prototype.peek == undefined) {
 
 
 
-    console.log(q.toString());
 
     var x,y;
     x = fn.args; y = args;
@@ -1195,7 +1159,6 @@ Macro = bubl.Macro;
 
 
 function bubbleSCRiPT(bnd, s=null) {
-  // console.log(s);
   return bubbleParse(s.trim()).map(function(exp){
     return evl(bnd,exp);
   }).pop();
@@ -1224,14 +1187,12 @@ var bnd = {
     if (msg.rest) {
       return target[msg.first](...msg.rest.toArray());
     } else {
-      // console.log(a[b.first.toString()]());
       return target[msg.first]();
     }
   },
 
   get: function(args) {
     var bnd=this
-    // console.log(args);
     return args.map(function(a){
               return evl(bnd,a);})
     .reduce(function(a,b) {
@@ -1241,19 +1202,6 @@ var bnd = {
         return b;
       }
     });
-    // console.log(args.map(function(a){
-    //               return evl(bnd,a);
-    //             })
-    //            .reduce(function(a,b) {
-    //               console.log(a, b);
-    //               return b[a.toString()];
-    //             }, bnd));
-    // return args.map(function(a){
-    //               return evl(bnd,a);
-    //             })
-    //            .reduce(function(a,b) {
-    //               return b[a.toString()];
-    //             }, bnd);
   },
 
   export: function(crunch) {
@@ -1320,8 +1268,6 @@ var bnd = {
         bnd = this,
         elves = evl;
 
-    console.log('j',turbulance);
-    console.log('j',elves(bnd,turbulance));
     if(elves(bnd,turbulance)){
       return elves(bnd, kango.peek());
     } else {
@@ -1336,8 +1282,6 @@ var bnd = {
   print: function(vals) {
     var bnd = this;
     // q =
-    // console.log(this[a])
-    // console.log(this);
     vals.
       map(function(a){return evl(bnd,a)}).
       each(function(value){
@@ -1347,7 +1291,6 @@ var bnd = {
 
         document.body.append(value);});
 
-    // console.log.apply(this,q);
     // vals.each(document.write)
     // function(val) {
     //   document.write(val);
@@ -1406,11 +1349,9 @@ var bnd = {
     var bnd = this;
     return evl(this, evl(this, eeks.first)[0]);
     return eeks.map(function(eek){
-      // console.log(evl(bnd, eek))
       return evl(bnd, eek);
       // return evl(bnd, evl(bnd, eek));
     })
-    // console.log('v', args.first)
     // return evl(this, args.first);
   },
 
@@ -1425,10 +1366,11 @@ var bnd = {
   // }
 }
 
+bnd.bnd = bnd;
+
 // bnz = Object.create(window);
 
 // bnd["/"] = function(args){
-//   console.log(args);
 //   return args.first/args.next; }
 //
 
