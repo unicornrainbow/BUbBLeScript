@@ -75,10 +75,17 @@
 
       muf muff muf
 
-     muff read,
-       (fn []
-          (prompt.innerText.slice 2
-             (- prompt.innerText.length 1)))
+      muf push (fn [a b]
+        (send a 'push b))
+
+       muf mufn,
+         (macro [name args & body]
+           (list 'muf name
+              (push (push body args) 'fn)))
+
+     mufn read [],
+       (prompt.innerText.slice 2
+           (- prompt.innerText.length 1))
 
        muff 😋 (fn []
          (let [v (read)]

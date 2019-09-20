@@ -1360,58 +1360,7 @@ var bnd = {
       return evl(bnd, eek);
     }).join('');
   }
-
-  // set: function(key,value) {
-  //   this[key] = value;
-  // }
 }
-
-bnd.bnd = bnd;
-
-// bnz = Object.create(window);
-
-// bnd["/"] = function(args){
-//   return args.first/args.next; }
-//
-
-
-bubbleSCRiPT(bnd, "\
-  (muf println\n\
-    (fn [a] (print a \"\\n\")))\n\
-\n\
-  (muf blank [a & b]\n\
-    (log a)\n\
-    (log b))\n\
-\n\
-");
-
-
-
-
-// (def vector
-//   (fn [first & rest]
-//    (reduce (fn [a b]
-//      (new Vector a b))
-//      rest
-//      (new Vector first))))
-//
-// (def vector
-//   (fn [first & rest]
-//     (reduce conj rest
-//       (new Vector first))))
-//
-// (def vector
-//   (fn [first & rest]
-//     (conj (new Vector first) & rest)))
-//
-// (def map ())
-
-// (fn [frag] (send document :append "xyz"))
-
-// (def println
-//   (fn [a] (print a "<br>")))
-
-// export { BubbleScript, List };
 
 var w = function(s) { return bubbleSCRiPT(bnd, s) };
 var m = function(s) { return bubbleParse(s); };
