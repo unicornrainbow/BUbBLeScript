@@ -37,19 +37,35 @@
   @keyframes blink { 50% { opacity: 0; }}
 </style>
 
-<script type='text/javascript' src="bubblescript.js"></script>
+<script src="bubblescript.js">
+  (mufn get-id [a]
+   (document.getElementById a))
+</script>
+
 <script type='text/bubblescript'>
-    muf get-id (fn [a]
-      (document.getElementById a))
+    ;ns repl
+
+   (muf get-id (fn [a]
+      (send document 'getElementById a)))
 
     muf cursor (get-id "cursor")
-    muf prompt  cursor.parentNode
+    muf prompt  (get cursor 'parentNode)
 
-    muf br (fn [meow]
-      (document.createElement "br"))
+    print "candi"
+    ;repl/cursor
+
+    ;muf br (fn [💅🤷🏽‍♀️👑]
+    ;  (document.createElement "br"))
+
+    muf br (fn [💅🤷🏽‍♀️👑],
+      (send  document 'createElement "br"))
+
+    ;mufn br [m e o w],
+    ;  (send document 'createElement "br")
 
     muf print (fn [msg]
-      (document.body.insertBefore
+      (send (get document 'body)
+        'insertBefore
         msg
         prompt))
 
@@ -57,21 +73,21 @@
       (print msg (br)))
 
     muf println (fn [msg]
-      (print (document.createTextNode msg))
+      (print (send document 'createTextNode msg))
       (print (br)))
 
     muf typeChar (fn [ch]
-      (prompt.insertBefore
-        (document.createTextNode ch)
+      (send prompt 'insertBefore
+        (send document 'createTextNode ch)
          cursor))
 
     muf clear (fn []
       (export  prompt 'innerHTML "> ")
-      (prompt.append cursor))
+      (send prompt 'append cursor))
 
     muf backspace (fn [q]
-      (prompt.removeChild
-         cursor.previousSibling))
+      (send prompt 'removeChild
+         (get cursor 'previousSibling)))
 
       muf muff muf
 
@@ -84,42 +100,43 @@
               (push (push body args) 'fn)))
 
      mufn read [],
-       (prompt.innerText.slice 2
-           (- prompt.innerText.length 1))
+       (send (get prompt 'innerText) 'slice 2
+           (- (get prompt 'innerText 'length) 1))
 
        muff 😋 (fn []
          (let [v (read)]
             (println v)
-            (print (document.createTextNode ";=> "))
-            (println (evl (parse v)))
+            (print (send document 'createTextNode ";=> "))
+            ;(println (evl (parse v)))
+            (println (parse v))
             (clear)))
 
         muf do list
 
         muf arrow-left (fn []
-          (prompt.insertBefore cursor
-             cursor.previousSibling))
+          (send prompt 'insertBefore cursor
+             (get cursor 'previousSibling)))
 
          muf arrow-right (fn []
-           (prompt.insertBefore
-              cursor.nextSibling
+           (send prompt 'insertBefore
+              (get cursor 'nextSibling)
               cursor))
 
-          window.addEventListener 'keydown,
+          send window 'addEventListener 'keydown,
             (jsfn [e]
               (if (= e.key "Backspace")
-                (do (e.preventDefault)
+                (do (send e 'preventDefault)
                      (backspace))
               (if (= e.key "ArrowRight")
                 (arrow-right)
               (if (= e.key "ArrowLeft")
                 (arrow-left)))))
 
-        window.addEventListener 'keypress,
+        send window 'addEventListener 'keypress,
           (jsfn [e]
-            (if (= e.key "Enter")
+            (if (= (get e 'key) "Enter")
               (😋)
-              (typeChar e.key)))
+              (typeChar (get e 'key))))
 
            window.xoxo
 

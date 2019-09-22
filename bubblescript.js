@@ -558,16 +558,6 @@ if (Array.prototype.peek == undefined) {
 
           //printRegister(stack, progress);
 
-
-
-
-          // progress
-          //word = buildGetSend(stack, word);
-          //word = buildGetSend(stack, word, progress, depth);
-          // [word, count] = buildGetSend(stack, word, count, depth);
-          [word, count] = buildGetSend(stack, word, stack.length-progress, depth);
-
-
           // {
           //   let m = [];
           //   m.push(word);
@@ -670,10 +660,6 @@ if (Array.prototype.peek == undefined) {
             break;
           }
 
-          // word = buildGetSend(stack, word);
-          // [word, count] = buildGetSend(stack, word, count, depth);
-          [word, count] = buildGetSend(stack, word, stack.length-progress, depth);
-
           while (stack.peek() == SingleQ) {
             stack.pop()
             count--;
@@ -737,12 +723,7 @@ if (Array.prototype.peek == undefined) {
                 word = new Symbol(word);
             }
 
-            // word = buildGetSend(stack, word);
-
-           [word, count] = buildGetSend(stack, word, stack.length-progress, depth);
-
           if (depth>0)
-            // [word, count] = buildGetSend(stack, word, stack.length-progress, depth);
 
             while (stack.peek() == SingleQ) {
               stack.pop()
@@ -761,7 +742,6 @@ if (Array.prototype.peek == undefined) {
           if (c == "\n" && lc != ',') {
             // if (depth == 0 && count > 1) {
             if (depth == 0) {
-              [word,count] = buildGetSend2(stack, word, progress);
               let d = stack.length - progress;
               if (d > 1) {
                 // implied list
@@ -769,8 +749,6 @@ if (Array.prototype.peek == undefined) {
                 d--;
                 count--;
 
-               //[word, count] = buildGetSend(stack, word, count);
-                //
                 // while (stack.peek() == SingleQ) {
                 //  stack.pop()
                 //  word = new Quoted(word);
@@ -800,7 +778,6 @@ if (Array.prototype.peek == undefined) {
                 word = null;
                 stack.push(list);
                 list = null;
-              // }              v84rf4r5e4i89u=8/88    (c == ' ') {
               }
               progress = stack.length; // cinch
             }
@@ -890,7 +867,6 @@ if (Array.prototype.peek == undefined) {
 
 
     if (depth == 0) {
-      [word,count] = buildGetSend2(stack, word, progress);
       let d = stack.length - progress;
       if (d > 1) {
         word = stack.pop();
@@ -930,113 +906,6 @@ if (Array.prototype.peek == undefined) {
 
   var get  = new Symbol('get'),
       send = new Symbol('send');
-  // Peeks at the stack, and builds get or send
-  // if nesscesary.
-  function buildGetSend(stack, word, count, depth) {
-    var list, d;
-    if(stack.peek() == Slash ||
-       stack.peek() == Dot) {
-
-      if (! word instanceof Symbol) {
-        throw("Expected a Symbol got a " + word.constructor);
-      }
-
-         d = stack.pop();
-         count--;
-
-      // quote that word and create a list with it
-      word = new Quoted(word);
-      list = new List(word);
-
-      // pop off successions of symbols and dots from stack and add to list
-      while (stack.peek() instanceof Symbol) {
-        word = stack.pop();
-        count--;
-        word = new Quoted(word);
-        list = list.push(word);
-        if (stack.peek() == Dot){
-          stack.pop(); count--
-        } else
-          break;
-      }
-
-      // unquote the first word in list (last added)
-      word = list.peek();//lollipop
-      list = list.pop();
-      list = list.push(word.unquote());
-
-      // if((stack.peek() == LParen
-      //           &&  d == Dot) ||
-      //     (count==0 && depth==0)) {
-      if(stack.peek() == LParen
-                &&  d == Dot) {
-        stack.push(send);
-        count++;
-        var length = list.count();
-        if (length == 2) {
-          stack.push(list.head);
-          count++;
-        } else {
-          if (length < 2)
-            throw("Is it your birthday?");
-          list = list.push(get);
-          stack.push(list.shift());
-          count++;
-        }
-        word = list.last;
-      } else {
-        if (count>0) {
-          // if (space) stack.push(Space);
-          list = list.push(get);
-          word = list;
-        } else {
-          //undo it
-          stack.push(list.peek());
-          list=list.pop();
-          while(list) {
-            stack.push(Dot);
-            stack.push(list.peek().unquote());
-            list=list.pop();
-          }
-          word = stack.pop();
-        }
-      }
-    }
-    return [word, count];
-  }
-
-
-  function buildGetSend2(stack, word, progress) {
-    let b=[];
-    let k=stack.length-progress;
-    if(k<=1)
-     return [word,k];
-    var a,e,r;
-    for(var i=0;i<k;i++) {
-      b.push(stack.pop());
-    }
-    a=b.pop();
-    if (b.peek()==Dot){
-      b.pop();
-      e=b.pop();
-      r = b.length ? send : get
-      b.push(new Quoted(e));
-      b.push(a);
-      b.push(r);
-    } else {
-      b.push(a);
-    }
-
-    // while(b.length) {
-    //   stack.push(b.pop());
-    // }
-    for(i=0,k=b.length;i<k;i++) {
-      stack.push(b.pop());
-    }
-
-    // return word;
-    return [word,k];
-  }
 
   function evl(bnd, exp) {
     switch (exp.constructor) {
@@ -1075,7 +944,6 @@ if (Array.prototype.peek == undefined) {
         return exp;
     }
   };
-
 
   function invoke(bnd, fn, args) {
     var bnd = Object.create(bnd);
