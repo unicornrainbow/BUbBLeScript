@@ -51,7 +51,6 @@
     muf cursor (get-id "cursor")
     muf prompt  (get cursor 'parentNode)
 
-    print "candi"
     ;repl/cursor
 
     ;muf br (fn [💅🤷🏽‍♀️👑]
@@ -68,6 +67,7 @@
         'insertBefore
         msg
         prompt))
+
 
     muf println (fn [msg]
       (print msg (br)))
@@ -107,22 +107,26 @@
          (let [v (read)]
             (println v)
             (print (send document 'createTextNode ";=> "))
-            ;(println (evl (parse v)))
-            (println (parse v))
+            (println (evl (parse v)))
+            ;(println (parse v))
             (clear)))
 
         muf do list
 
         muf arrow-left (fn []
-          (send prompt 'insertBefore cursor
-             (get cursor 'previousSibling)))
+          (prompt.insertBefore cursor
+             cursor.previousSibling))
+
+          ;   muf arrow-left (fn []
+          ;     (send prompt 'insertBefore cursor
+          ;        (get cursor 'previousSibling)))
 
          muf arrow-right (fn []
-           (send prompt 'insertBefore
+           (prompt.insertBefore
               (get cursor 'nextSibling)
               cursor))
 
-          send window 'addEventListener 'keydown,
+          window.addEventListener 'keydown,
             (jsfn [e]
               (if (= e.key "Backspace")
                 (do (send e 'preventDefault)
@@ -132,12 +136,14 @@
               (if (= e.key "ArrowLeft")
                 (arrow-left)))))
 
-        send window 'addEventListener 'keypress,
+        window.addEventListener 'keypress,
           (jsfn [e]
             (if (= (get e 'key) "Enter")
               (😋)
               (typeChar (get e 'key))))
 
+
+           println "candi"
            window.xoxo
 
 </script>

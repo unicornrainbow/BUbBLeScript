@@ -2,21 +2,18 @@
 class BubbleScript {
   parse() {}
 }
-// Todoit
-// *Parse comments (lines)
-// *Add jsfn
-// *String formatting in toString
-// *fn bindings
-// *list macro
-// *onclick fn
+/* Todoit
 
-// touchmove fn
-// expandmacro
-// let
-// multi list macros?
-// & vardic
-// destructing
-// ns
+   - String formatting in toString
+   - fn bindings
+   - onclick fn
+   - touchmove fn
+   - expandmacro
+   - multi list macros?
+   - destructing
+   - ns
+
+*/
 
 class List {
   constructor(head, tail=null) {
@@ -343,26 +340,49 @@ class Glider {
 
 }
 
+                  class Symbol {
 
-class Symbol {
-  constructor(value) {
-    this.value = value;
-  }
+                constructor(value) {
 
-  toString() {
-    return this.value;
-  }
-}
+                 this.value = value;
 
-// class String {
-//   constructor(value) {
-//     this.value = value;
-//   }
-//
-//   toString() {
-//     return this.value;
-//   }
-// }
+                  var fn, segments,
+                   callPattern=1;
+            [value,fn] = value.split('/')
+              segments = value.split('.')
+
+           if (segments.length==1 && !fn)
+                  fn = segments.pop()
+
+                       if (!fn)
+        [fn,callPattern]=[segments.pop(),2]
+
+                    this.fn = fn
+               this.segments = segments
+            this.callPattern = callPattern
+
+                          }
+
+                    toString() {
+                   return this.value;
+                          }
+
+
+                 resolveRoot(bnd) {
+                 return this.segments
+               .reduce(function (e,f){
+                  return e && e[f]
+                      }, bnd)
+                         }
+
+                   resolve(bnd) {
+            var r = this.resolveRoot(bnd)
+               if (r) r = r[this.fn]
+                return r != undefined ?
+                      r : this
+                         }
+
+                         }
 
 class Keyword {
   constructor(value) {
@@ -390,7 +410,6 @@ class Quoted {
     return "'" + this.value.inspect;
   }
 }
-
 
 class Syntax {};
 class LParen  extends Syntax {};
@@ -792,7 +811,7 @@ if (Array.prototype.peek == undefined) {
             // comma = true;
 
           break;
-        case ".":
+        //case ".":
           if (word) {
             switch (true) {
               case /^\d+\.$/.test(word):
@@ -810,7 +829,7 @@ if (Array.prototype.peek == undefined) {
             word = c;
           }
           break;
-        case '/':
+        //case '/':
           if (word) {
             if (stack.peek() != Slash) {
               stack.push(new Symbol(word));
@@ -904,33 +923,28 @@ if (Array.prototype.peek == undefined) {
     console.log(stack.slice(progress).map(function(a){return a.toString()}).join());
   }
 
-  var get  = new Symbol('get'),
-      send = new Symbol('send');
-
   function evl(bnd, exp) {
     switch (exp.constructor) {
       case Symbol:
-        //return bnd[exp];
-        {
-          let s = bnd[exp];
-          if (s === undefined)
-            return exp;
-          else
-            return s
-        }
+        return exp.resolve(bnd)
       case List:
-        var q, args;
-        if (exp.first instanceof Symbol) {
-          q = evl(bnd, exp.first);
-          if (q==undefined) {
-            throw("Could not find fn or macro named \"" + exp.first + "\"");
-          }
-          args = exp.rest;
-          return q.call(bnd, args);
-        } else {
-          return exp;
+        {
+              let s = exp.first
+          if (s instanceof Symbol) {
+           if (s.callPattern==1) {
+              let q = evl(bnd, s)
+          return q.call(bnd, exp.rest)
+             } else /* send */ {
+           let q = s.resolveRoot(bnd)
+        return q[s.fn](...exp.rest.map(
+                 function(a) {
+              return evl(bnd, a)
+                }).toArray())
+                     }
+                  } else {
+                  return exp
+                     }
         }
-        break;
       case Glider:
         return exp.map(function(a) {evl(bnd,a)});
       case Fn:
