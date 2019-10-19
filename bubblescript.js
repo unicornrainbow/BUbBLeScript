@@ -2,18 +2,6 @@
 class BubbleScript {
   parse() {}
 }
-/* Todoit
-
-   - String formatting in toString
-   - fn bindings
-   - onclick fn
-   - touchmove fn
-   - expandmacro
-   - multi list macros?
-   - destructing
-   - ns
-
-*/
 
 class List {
   constructor(head, tail=null) {
@@ -110,27 +98,6 @@ class List {
     return c.push(memo).reduce(fn);
   }
 
-  // reduce(fn, memo) {
-  //   if (memo) {
-  //     return this._reduce(fn, memo);
-  //   } else {
-  //     if (this.tail) {
-  //       return this.tail._reduce(fn, this.head)
-  //     } else {
-  //       return this.head;
-  //     }
-  //   }
-  // }
-  //
-  // _reduce(fn, memo='endlesslove') {
-  //   memo = fn(memo, this.head);
-  //   if (this.tail) {
-  //     return this.tail._reduce(fn, memo);
-  //   } else {
-  //     return memo;
-  //   }
-  // }
-
   each (fn) {
     var result = fn(this.first);
     if (this.rest)
@@ -163,14 +130,6 @@ class Glider {
     } else {
       return this.head
     }
-
-    // if (this._first == null)
-    //   if (this.tail)
-    //     this._first = this.tail.first
-    //   else
-    //     this._first = this.head
-    //
-    // return this._first;
   }
 
   get rest() {
@@ -196,10 +155,6 @@ class Glider {
   }
 
   toString() {
-    this.inspect();
-  }
-
-  toString() {
     return "[" + this.join() + "]"
   }
 
@@ -207,60 +162,8 @@ class Glider {
     "[" + this.map(function(q){q.inspect()}).join() + "]";
   }
 
-
-  map(fn) {
-    var q=null;
-    if(this.tail)
-      q = this.tail.map(fn);
-    return new Glider(fn(this.head), q);
-  }
-
   map(fn, ...aux) {
     var tail=null;
-
-    // var result = new Glider(fn(this.first,
-    //   ...aux.map(function(q) {
-    //     return q ? q.first : q})));
-    //
-    // if (!this.rest) {
-    //   return result;
-    // }
-    //
-    // return this.rest.reduce(function([a, aux], b) {
-    //   return [new Glider(fn(b.first, ...aux.map(function(q) {
-    //     return q ? q.first : q})), a), aux.map(function(q) {
-    //       return q ? q.rest : q})]
-    // }, [result, aux]);
-    //
-    // var result = new Glider(fn(this.first,
-    //   ...aux.map(function(q) {
-    //     return q ? q.first : q})));
-
-    // if(this.rest) {
-    //   aux = aux.map(function(q) {
-    //     return q ? q.rest : q});
-    //   return this.rest.reduce(function([a, ...aux], b) {
-    //     return [new Glider(fn(b.first, ...aux.map(function(q) {
-    //       return q ? q.first : q}), a), ...aux.map(function(q) {
-    //         return q ? q.rest : q})]
-    //   }, [result, ...aux])
-    //
-    //   this.rest.map(fn, ...aux.map(function(q) {
-    //     return q ? q.rest : q}))
-    //
-    //   return new Glider(fn(this.head,
-    //     ...aux.map(function(q) {
-    //       return q ? q.first : q})),
-    //     this.tail.map(fn, ...aux.map(function(q) {
-    //       return q ? q.rest : q})));
-    //
-    // } else {
-    //   return result;
-    //   var result = new Glider(fn(this.first,
-    //     ...aux.map(function(q) {
-    //       return q ? q.first : q})));
-    // }
-
 
     var result = new Glider(fn(this.first,
       ...aux.map(function(q) {
@@ -270,10 +173,7 @@ class Glider {
       return result;
 
     function into(a, b) {
-      // if (!b || !b.peek())
-      //   return a;
-
-      var c = new Glider(b.peek()); //b.peek());
+      var c = new Glider(b.peek());
       b = b.pop();
 
       while(b) {
@@ -288,16 +188,9 @@ class Glider {
       return a;
     }
 
-    // return result;
-    // return result;
     return into(result, this.rest.map(fn,
       ...aux.map(function(q) {
         return q.rest})));
-
-    // return this.rest.map(fn,
-    //   ...aux.map(function(q) {
-    //     return q.rest}))
-
   }
 
   mapp(fn, ...aux) {
@@ -307,22 +200,10 @@ class Glider {
       ...aux.map(function(q) {
         return q ? q.first : q})));
 
-    // if(!this.rest)
-    //   return result;
-
     return this.rest.map(function(...args) {
       return new Glider(fn(...args), result);
     }, ...aux.map(function(q) {
       return q.rest}));
-
-
-    //   return new Glider(fn(), result)
-    // }, ...aux.map(function(q) {
-    //   return q.rest}))
-    //
-    // return into(result, this.rest.map(fn,
-    //   ...aux.map(function(q) {
-    //     return q.rest})));
 
   }
 
