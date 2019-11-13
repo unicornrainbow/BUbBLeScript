@@ -1095,7 +1095,7 @@ var bnd = {
    or: function(a,b) { return a || b; },
    '>': function(xxx) { return evl(this,xxx.first) > evl(this,xxx.last); },
    '<': function(xxx) { return evl(this,xxx.first) < evl(this,xxx.last); },
-  alert: function(msg) {
+  blert: function(msg) {
     alert(msg);
   },
   alert: function(vals) {
