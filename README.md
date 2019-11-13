@@ -26,3 +26,14 @@ easy. Just blert it out!
     
 See! That was easy!!
 
+### Zombies eat brains ###
+
+Bubblescript uses funxctions. Tiradactale salad, apple peanut butter surprise.
+
+Adding stuff togther, like magic.
+
+    + 7 4
+    
+Sry, is that a lisp? Whatevea.
+
+    blert (+ 7 4)
