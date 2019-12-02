@@ -1098,7 +1098,7 @@ var bnd = {
   blert: function(msg) {
     alert(msg);
   },
-  alert: function(vals) {
+  blert: function(vals) {
     var bnd = this;
     alert(vals.
       map(function(a){return evl(bnd,a)}).join());
