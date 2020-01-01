@@ -729,6 +729,11 @@ if (Array.prototype.peek == undefined) {
         case ';':
           comment = true;
           break;
+        case '/':
+          if (lc == '/') {
+            comment = true;
+          }
+          break;
         default:
           if (word) {
             word += c;
