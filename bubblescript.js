@@ -1132,6 +1132,10 @@ window.addEventListener('load', function () {
   frosty = document.querySelectorAll(
     "script[type='text/bubblescript']")
   frosty.forEach(function(ice) {
-    bubbleSCRiPT(bnd,ice.innerText);
+    try {
+      bubbleSCRiPT(bnd,ice.innerText);
+    } catch (e){
+      console.log(e)
+    }
   })
 });
