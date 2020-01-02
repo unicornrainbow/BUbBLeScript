@@ -259,6 +259,7 @@ class Glider {
                    resolve(bnd) {
             var r = this.resolveRoot(bnd)
                if (r) r = r[this.fn]
+                   // return r;
                 return r != undefined ?
                       r : this
                          }
@@ -377,6 +378,7 @@ if (Array.prototype.peek == undefined) {
         number = /^\d+$/,
         keyword = /^:.+$/,
         stropen = false, // string open flag
+        checkcomment = false,
         comment = false,
         count = 0,
         counts = [],
@@ -726,7 +728,7 @@ if (Array.prototype.peek == undefined) {
           break;
         // case '\':
 
-        case ';':
+        case '%':
           comment = true;
           break;
         case '/':
@@ -819,13 +821,15 @@ if (Array.prototype.peek == undefined) {
           if (s instanceof Symbol) {
            if (s.callPattern==1) {
               let q = evl(bnd, s)
-          return q.call(bnd, exp.rest)
+       // if (!exp.rest) { return q.call(bnd) }
+       return q.call(bnd, exp.rest)
              } else /* send */ {
            let q = s.resolveRoot(bnd)
+       if (!exp.rest) { return q[s.fn]() }
         return q[s.fn](...exp.rest.map(
                  function(a) {
               return evl(bnd, a)
-                }).toArray())
+               }).toArray())
                      }
                   } else {
                   return exp
@@ -1067,9 +1071,9 @@ var bnd = {
 
   list: function(args) {
     var bnd = this;
-    return args.map(function(arg){
+    return args.reverse().map(function(arg){
       return evl(bnd, arg);
-    })
+    }).reverse();
   },
 
   "+": function(args){

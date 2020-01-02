@@ -5,26 +5,85 @@ i
 
 <script src="bubblescript.js"></script>
    <script type="text/bubblescript">
-  ;document.body.classList.add "rtl"
-     muf blert (fn [b] (alert b))
+  %document.body.classList.add "rtl"
 
   muf button (document.getElementById "🎃")
      button.addEventListener 'click (jsfn [e]
         (document.body.classList.toggle "rtl"))
-        ;(blert "i strongly disagree"))
+        %(blert "i strongly disagree"))
+
+  % ctrl enter to create new
+  % cells
+  %keydown window [e]
+  %  (blert 5)
+
+% (defmacro 'keydown [b c d]
+    % (list 'el.addEventListner 'keydown
+      % (jsfn l k)
+      % (w )
+      % ))
+%
+  % keydown window (fn [e]
+    % (lov yoy))
+
+  window.addEventListener 'keydown (jsfn [e]
+    (if (and e.altKey
+        (= "ArrowDown" e.key))
+      (list (blert "Move down"))))
+
+  window.addEventListener 'keydown (jsfn [e]
+    (if (and e.ctrlKey (= "Enter" e.key))
+      (list
+        %(blert "Yas")
+        %(window.console.log e.target)
+        (let [pre (document.createElement "pre")]
+           %(blert "lala")
+           (pre.setAttribute "contenteditable" true)
+           %(export pre 'innerHTML "k")
+           (e.target.insertAdjacentElement "afterend" pre)
+           %(pre.insertBefore e.target)
+           (pre.focus)))))
+           %))))
+        %)))
+        %<pre contenteditable>)))
+    %(window.console.log e)
+    %(blert e.ctrlKey)
+    %(blert e.key))
 
   muf id (fn [id]
     document.getElementById id)
 
   click (id "🎃") [e],
-  (document.body.classList.toggle "rtl")
-
+    (document.body.classList.toggle "rtl")
 
   muf button (document.getElementById "🌽")
-     button.addEventListener 'click (jsfn [e]
+
+    button.addEventListener 'click (jsfn [e]
         (document.body.classList.remove "rtl"))
 
+
 </script>
+
+
+<script type="text/bubblescript">
+  % Comments are cool
+  blert (+ 7 7)
+  %blert "fun"
+
+
+  (let
+    [log (fn [m] (window.console.log m))]
+    (window.addEventListener 'paste
+      (jsfn [e] (log
+        (e.clipboardData.getData 'text)))
+      false))
+</script>
+
+      <script type="text/javascript">
+
+           alert(7);
+
+       </script>
 
 
               <style>
@@ -74,11 +133,19 @@ code, pre {
 </style>
 </head>
 <body class="rtl">
-<pre>
+
+<pre contenteditable>
+coo ca choo, la la loo
+
+class ActAct
+
 class BubbleScript {
   parse() {}
 }
-</pre>
+
+
+
+C </pre>
 
 
 <div style="clear:both;"></div>

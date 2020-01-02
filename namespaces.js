@@ -10,7 +10,7 @@
       let value = null;
       exp = exp.toString()
       if (bnd) {
-        value = bnd[exp];
+      value = bnd[exp];
         if (value)
           return value;
       }
@@ -152,6 +152,61 @@
       return exp;
   }
 };
+
+
+                 ---    function   ----
+                   --->  evl2  <---
+                    (bnd , exp , ns)
+                   (exp, ns={}, bnd)
+                            ︷
+
+      case Glider:
+        return exp.map(function(a) {evl(bnd,a)});
+      case Fn:
+      case Macro:
+        return exp.body.each(function(exp){
+          return evl(exp, ns, bnd);
+        });
+      case Quoted:
+        return exp.unquote();
+      default:
+        return exp;
+    }
+                           ︸
+                  ⎧          }
+                  ⎨
+                  ⎩
+
+                  ⎰
+                  ⎱
+                  ﹛
+                  ｛
+                  ⎡
+                  ⎨
+                  ⎣
+                  ⎛
+                  ⎜
+                  ⎠
+                  ⎞
+                  ⎜
+                  ⎝
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                           function
                         fetchScript

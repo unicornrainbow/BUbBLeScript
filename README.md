@@ -2,7 +2,6 @@
 
 
 # BUbBLeScript
-Dinosaur rhinosaurus pumkim skittle
 
 Bubblescript is the worldʻs first bubblegum flavored scripting language.
 
@@ -37,6 +36,20 @@ Adding stuff togther, like magic.
 
     + 7 4
 
-Sry, is that a lisp? Whatevea.
+Sry, is that a lisp?
+
+No, i believe iʻm speaking quite clearly.
+
+Oh, yea, right.
 
     blert (+ 7 4)
+
+
+---
+
+Bubblescript is based kinda sorta off of Clojure.
+Give them a look about [over here][] if you fancy. There is also a super cool Javascript
+targeted version called [ClojureScript][].
+
+[over here]: http://www.clojure.org/
+[ClojureScript]: http://www.clojurescript.org/
