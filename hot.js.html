@@ -70,13 +70,20 @@ i
   blert (+ 7 7)
   %blert "fun"
 
+  ((fn [m] (blert m)) 4)
+  %(fn [text]
+  %  (export document.body 'innerHTML
+  %      text)) "candy"
 
   (let
     [log (fn [m] (window.console.log m))]
+    %[log window.console.log]
     (window.addEventListener 'paste
       (jsfn [e] (log
         (e.clipboardData.getData 'text)))
       false))
+
+
 </script>
 
       <script type="text/javascript">

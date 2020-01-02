@@ -258,7 +258,7 @@ class Glider {
 
                    resolve(bnd) {
             var r = this.resolveRoot(bnd)
-               if (r) r = r[this.fn]
+               if (r) r = r[this.fn];
                    // return r;
                 return r != undefined ?
                       r : this
@@ -817,13 +817,21 @@ if (Array.prototype.peek == undefined) {
         return exp.resolve(bnd)
       case List:
         {
-              let s = exp.first
+              let s = exp.peek()
           if (s instanceof Symbol) {
            if (s.callPattern==1) {
-              let q = evl(bnd, s)
+           //  x or x/x or x.x/x
+              let q = evl(bnd, s);
        // if (!exp.rest) { return q.call(bnd) }
-       return q.call(bnd, exp.rest)
+                   if (q!=s)
+        return evl(bnd, exp.pop().push(q));
+                       else
+                    return exp;
+              // return evl(bnd)
+           // return q.call(bnd, exp.rest)
              } else /* send */ {
+               // call pattern 2
+           // x.x or x.x.x or x.x...
            let q = s.resolveRoot(bnd)
        if (!exp.rest) { return q[s.fn]() }
         return q[s.fn](...exp.rest.map(
@@ -831,8 +839,17 @@ if (Array.prototype.peek == undefined) {
               return evl(bnd, a)
                }).toArray())
                      }
-                  } else {
-                  return exp
+          } else if (s instanceof List) {
+   return evl(bnd,exp.pop().push(evl(bnd, s)))
+          } else if (s instanceof Fn) {
+           return s.call(bnd, exp.rest);
+          } else if (s instanceof Function) {
+           return s.call(bnd, exp.rest);
+          } else if (s instanceof Macro) {
+              throw "macro called"
+          } else {
+                return undefined;
+                  //return exp;
                      }
         }
       case Glider:
