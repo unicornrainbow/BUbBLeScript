@@ -75,11 +75,15 @@ i
   %  (export document.body 'innerHTML
   %      text)) "candy"
 
+  (muf ⛈ (fn [text]
+     (export document.body 'innerHTML
+        text)))
+
   (let
     [log (fn [m] (window.console.log m))]
     %[log window.console.log]
     (window.addEventListener 'paste
-      (jsfn [e] (log
+      (jsfn [e] (⛈
         (e.clipboardData.getData 'text)))
       false))
 
