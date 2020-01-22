@@ -932,9 +932,11 @@ if (Array.prototype.peek == undefined) {
 
   bubl.glider = glider;
   bubl.bubbleParse = bubbleParse;
+  bubl.parse = bubbleParse;
   bubl.evl = evl
   bubl.Fn = Fn;
   bubl.Macro = Macro;
+  bubl.Symbol = Symbol;
 
   // bubl = this;
 
