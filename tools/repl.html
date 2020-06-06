@@ -41,11 +41,32 @@
 
 <script type='text/javascript' src="../bubblescript.js"></script>
 <script type='text/bubblescript'>
+
+  // Aliases
+  muf muff muf
+  muf do list
+
   muf get-id (fn [a]
     (document.getElementById a))
 
-  muf cursor (get-id "cursor")
-  muf prompt  cursor.parentNode
+  muf mufmacro (macro [name args body]
+    (list 'muf name
+      (list 'macro args body)))
+
+  mufmacro dgi [a],
+    (list 'document.getElementById a)
+  // blert (+ 7 7 7)
+
+  // blert (tail [1 2 3])
+
+  // muf dgi (macro [a]
+  //   (list 'document.getElementById a))
+
+  blert (dgi "cursor")
+
+  muf cursor (dgi "cursor")
+
+  muf prompt cursor.parentNode
 
   muf br (fn [meow]
     (document.createElement "br"))
@@ -75,8 +96,6 @@
     (prompt.removeChild
       cursor.previousSibling))
 
-  muf muff muf
-
   muff read (fn []
     (prompt.innerText.slice 2
       (- prompt.innerText.length 1)))
@@ -88,8 +107,6 @@
       (print (document.createTextNode ";=> "))
       (println (evl (parse v)))
       (clear)))
-
-  muf do list
 
   muf arrow-left (fn []
     (prompt.insertBefore cursor

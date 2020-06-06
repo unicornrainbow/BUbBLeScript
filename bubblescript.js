@@ -1,4 +1,5 @@
 
+/** Version 0.1.2 **/
 class BubbleScript {
   parse() {}
 }
@@ -362,11 +363,14 @@ if (Array.prototype.peek == undefined) {
       this.bnd  = bnd;
       this.args = args;
       this.body = body;
-
     }
 
     call(bnd, args) {
       return evl(this.bnd, invoke(bnd,this,args));
+    }
+
+    expand(bnd, args) {
+      return invoke(bnd,this,args);
     }
   }
 
@@ -846,7 +850,8 @@ if (Array.prototype.peek == undefined) {
           } else if (s instanceof Function) {
            return s.call(bnd, exp.rest);
           } else if (s instanceof Macro) {
-              throw "macro called"
+              // throw "macro called"
+              return s.call(bnd, exp.rest)
           } else {
                 return undefined;
                   //return exp;
@@ -1123,9 +1128,6 @@ var bnd = {
    or: function(a,b) { return a || b; },
    '>': function(xxx) { return evl(this,xxx.first) > evl(this,xxx.last); },
    '<': function(xxx) { return evl(this,xxx.first) < evl(this,xxx.last); },
-  blert: function(msg) {
-    alert(msg);
-  },
   blert: function(vals) {
     var bnd = this;
     alert(vals.
@@ -1150,6 +1152,14 @@ var bnd = {
     return eeks.map(function(eek){
       return evl(bnd, eek);
     }).join('');
+  },
+  expandmacro: function(args) {
+    var bnd = this,
+        l = args.first,
+        m = l.first;
+
+    m = evl(bnd, m);
+    return m.expand(bnd, l.rest);
   }
 }
 
