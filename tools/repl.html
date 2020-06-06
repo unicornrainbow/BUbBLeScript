@@ -52,28 +52,28 @@
 
   muf print (fn [msg]
     (document.body.insertBefore
-        msg
-        prompt))
+      msg
+      prompt))
 
   muf println (fn [msg]
-      (print msg (br)))
+    (print msg (br)))
 
   muf println (fn [msg]
-      (print (document.createTextNode msg))
-      (print (br)))
+    (print (document.createTextNode msg))
+    (print (br)))
 
   muf typeChar (fn [ch]
-      (prompt.insertBefore
-        (document.createTextNode ch)
-         cursor))
+    (prompt.insertBefore
+      (document.createTextNode ch)
+      cursor))
 
   muf clear (fn []
-      (export  prompt 'innerHTML "> ")
-      (prompt.append cursor))
+    (export  prompt 'innerHTML "> ")
+    (prompt.append cursor))
 
   muf backspace (fn [q]
-      (prompt.removeChild
-         cursor.previousSibling))
+    (prompt.removeChild
+      cursor.previousSibling))
 
   muf muff muf
 
@@ -83,40 +83,40 @@
 
   //   What does this function do?
   muff 😋 (fn []
-     (let [v (read)]
-        (println v)
-        (print (document.createTextNode ";=> "))
-        (println (evl (parse v)))
-        (clear)))
+    (let [v (read)]
+      (println v)
+      (print (document.createTextNode ";=> "))
+      (println (evl (parse v)))
+      (clear)))
 
   muf do list
 
   muf arrow-left (fn []
-      (prompt.insertBefore cursor
-         cursor.previousSibling))
+    (prompt.insertBefore cursor
+      cursor.previousSibling))
 
   muf arrow-right (fn []
-      (prompt.insertBefore
-        cursor.nextSibling
-         cursor))
+    (prompt.insertBefore
+      cursor.nextSibling
+      cursor))
 
   // window.avl -> window.addEventListener ucp -> (unique character pattern)
   window.addEventListener 'keydown,
-      (jsfn [e]
-         (window.console.log e.key)
-         (if (= e.key "Backspace")
-            (do (e.preventDefault)
-                (backspace))
-         (if (= e.key "ArrowRight")
-            (arrow-right)
-         (if (= e.key "ArrowLeft")
-            (arrow-left)))))
+    (jsfn [e]
+      (window.console.log e.key)
+      (if (= e.key "Backspace")
+        (do (e.preventDefault)
+            (backspace))
+      (if (= e.key "ArrowRight")
+        (arrow-right)
+      (if (= e.key "ArrowLeft")
+        (arrow-left)))))
 
   window.addEventListener 'keypress,
-     (jsfn [e]
-        (if (= e.key "Enter")
-            (😋)
-            (typeChar e.key)))
+    (jsfn [e]
+      (if (= e.key "Enter")
+        (😋)
+        (typeChar e.key)))
 
   (window.xoxo)
 
