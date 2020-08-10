@@ -1,6 +1,6 @@
 
-/** Version 0.1.2 **/
-class BubbleScript {
+/** Version 0.1.2.🛍🎪🍤 **/
+class BUbBLeScript {
   parse() {}
 }
 
@@ -452,7 +452,7 @@ if (Array.prototype.peek == undefined) {
             }
           }
 
-          if (!word) word = stack.pop();
+          if (word==null) word = stack.pop();
           if (word == LParen) {
             stack.push(new List)
             word = null;
@@ -555,7 +555,7 @@ if (Array.prototype.peek == undefined) {
               }
           }
 
-          if (!word) {
+          if (word==null) {
              word = stack.pop();
              count--;
           }
@@ -849,16 +849,15 @@ if (Array.prototype.peek == undefined) {
            return s.call(bnd, exp.rest);
           } else if (s instanceof Function) {
            return s.call(bnd, exp.rest);
-          } else if (s instanceof Macro) {
-              // throw "macro called"
-              return s.call(bnd, exp.rest)
+         } else if (s instanceof Macro) {
+           return s.call(bnd, exp.rest);
           } else {
                 return undefined;
                   //return exp;
                      }
         }
       case Glider:
-        return exp.map(function(a) {evl(bnd,a)});
+        return exp.map(function(a) {return evl(bnd,a)});
       case Fn:
       case Macro:
         return exp.body.each(function(exp){
@@ -1100,9 +1099,11 @@ var bnd = {
     }).reverse();
   },
 
-  "+": function(args){
-    // return args.first+args.next;
-    return args.reduce(function(a, b){return a+b;});
+  "+": function(aahs){
+    var bnd = this;
+    return aahs.map(function(ah){
+      return evl(bnd, ah);
+    }).reduce(function(a, b){return a+b;});
   },
   "-": function(aahs){
     var bnd = this;
@@ -1110,12 +1111,17 @@ var bnd = {
       return evl(bnd, ah);
     }).reduce(function(a, b){return a-b;});
   },
-  "*": function(args){
-    // return args.first*args.last;
-    return args.rest.reduce(function(a, b){return a*b;}, args.first);
+  "*": function(aahs){
+    var bnd = this;
+    return aahs.map(function(ah){
+      return evl(bnd, ah);
+    }).reduce(function(a, b){return a*b;});
   },
-  "/": function(args){
-    return args.reduce(function(a, b){return a/b;});
+  "/": function(aahs){
+    var bnd = this;
+    return aahs.map(function(ah){
+      return evl(bnd, ah);
+    }).reduce(function(a, b){return a/b;});
   },
   "=": function(oohs){
     var bnd=this;
@@ -1165,6 +1171,12 @@ var bnd = {
 
 var w = function(s) { return bubbleSCRiPT(bnd, s) };
 var m = function(s) { return bubbleParse(s); };
+
+w("muf push (fn [a b] (send a 'push b))")
+w("muf peek (fn [a b] (send a 'peek b))")
+w("muf pop (fn [a b] (send a 'pop b))")
+w("(muf mufn (macro [name & z] \
+  (list 'muf name (push z 'fn)))) ")
 
 window.addEventListener('load', function () {
   frosty = document.querySelectorAll(

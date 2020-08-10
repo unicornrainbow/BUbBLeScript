@@ -74,3 +74,17 @@ QUnit.test( "can parse glider", function( assert ) {
       new Glider(7)));
   assert.propEqual( q[0], m);
 });
+
+
+QUnit.test( "0", function( assert ) {
+  assert.equal(w('0'), 0);
+  assert.equal(w("send [0] 'peek"), 0);
+  assert.propEqual(w("[0]"), new Glider(0));
+  assert.equal(w("peek [0]"), 0);
+});
+
+QUnit.test( "push peek pop", function( assert ) {
+  assert.propEqual(w("push [2] 1"),  new Glider(1, new Glider(2)));
+  assert.equal(w("peek [2 1 0]"), 0);
+  assert.propEqual(w("pop [2 1 0]"), new Glider(1, new Glider(2)));
+});
