@@ -1173,10 +1173,11 @@ var w = function(s) { return bubbleSCRiPT(bnd, s) };
 var m = function(s) { return bubbleParse(s); };
 
 w("muf push (fn [a b] (send a 'push b))")
-w("muf peek (fn [a b] (send a 'peek b))")
-w("muf pop (fn [a b] (send a 'pop b))")
 w("(muf mufn (macro [name & z] \
   (list 'muf name (push z 'fn)))) ")
+w("mufn peek [a b] (send a 'peek b)")
+w("mufn pop [a b] (send a 'pop b)")
+
 
 window.addEventListener('load', function () {
   frosty = document.querySelectorAll(
