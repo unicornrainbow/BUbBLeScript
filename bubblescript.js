@@ -1176,6 +1176,17 @@
     w("mufn peek [a b] (send a 'peek b)")
     w("mufn pop [a b] (send a 'pop b)")
 
+    window.m = m;
+    window.w = w;
+    window.bubl = bubl;
+    window.bubbleParse = bubbleParse;
+    window.bubbleSCRiPT = bubbleSCRiPT;
+
+    window.Symbol = Symbol;
+    window.List = List;
+    window.Glider = Glider;
+
+
 
     window.addEventListener('load', function () {
       frosty = document.querySelectorAll(
