@@ -1,11 +1,18 @@
 
-        /**   Version 0.1.2.🛍🎪🍤☄️   **/
 
-(function() {             //             } ()noitcnuf)
 
-  class BUbBLeScript { // } tpircSeLBbUB ssalc
-      parse() {}         //        {} ()esrap
-  }                      //                       {
+            /**   BUbBLeScript
+                         Version 0.1.2.🛍🎪🍤☄️   **/
+
+
+
+
+
+(function() {                    //                 } ()noitcnuf)
+
+  class BUbBLeScript {        //      } tpircSeLBbUB ssalc
+      parse() {}                //             {} ()esrap
+  }                             //                            {
 
     class List {
       constructor(head, tail=null) {
