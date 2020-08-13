@@ -1,10 +1,11 @@
 
-/** Version 0.1.2.🛍🎪🍤 **/
-(function() {
+        /**   Version 0.1.2.🛍🎪🍤☄️   **/
 
-    class BUbBLeScript {
-      parse() {}
-    }
+(function() {             //             } ()noitcnuf)
+
+  class BUbBLeScript { // } tpircSeLBbUB ssalc
+      parse() {}         //        {} ()esrap
+  }                      //                       {
 
     class List {
       constructor(head, tail=null) {
