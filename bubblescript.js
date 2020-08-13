@@ -1,5 +1,7 @@
 
 /** Version 0.1.2.🛍🎪🍤 **/
+(function() {
+
 class BUbBLeScript {
   parse() {}
 }
@@ -324,8 +326,6 @@ if (Array.prototype.peek == undefined) {
 }
 
             var bubl = {};
-
-            (function() {
 
               class Fn {
      constructor (bnd, args, body) {
@@ -944,8 +944,6 @@ if (Array.prototype.peek == undefined) {
 
   // bubl = this;
 
-})();
-
 
 bubbleParse = bubl.bubbleParse;
 evl = bubl.evl;
@@ -1190,3 +1188,5 @@ window.addEventListener('load', function () {
     }
   })
 });
+
+})();
