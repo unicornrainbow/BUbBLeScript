@@ -312,6 +312,42 @@
     class Slash   extends Syntax {};
     class Space   extends Syntax {};
 
+              class Fn {
+     constructor (bnd, args, body) {
+          this.bnd  =  bnd ;
+           this.args = args ;
+          this.body = body ;
+                   }
+
+            call(bnd, args) {
+        return invoke(this.bnd, this,
+      args && args.map(function(a){
+           return evl(bnd,a)}))
+                    }
+
+               toString() {
+      return this.body.push(this.args)
+        .push(new Symbol("fn"))
+             .toString()
+                   }
+                   }
+
+              class Macro {
+                constructor(bnd, args, body) {
+                  this.bnd  = bnd;
+                  this.args = args;
+                  this.body = body;
+                }
+
+                call(bnd, args) {
+                  return evl(this.bnd, invoke(bnd,this,args));
+                }
+
+                expand(bnd, args) {
+                  return invoke(bnd,this,args);
+                }
+              }
+
     LParen.toString  = function () { return "("; }
     LBrack.toString = function () { return "["; }
     Dot.toString      = function () { return "."; }
@@ -335,26 +371,6 @@
 
             var bubl = {};
 
-              class Fn {
-     constructor (bnd, args, body) {
-          this.bnd  =  bnd ;
-           this.args = args ;
-          this.body = body ;
-                   }
-
-            call(bnd, args) {
-        return invoke(this.bnd, this,
-      args && args.map(function(a){
-           return evl(bnd,a)}))
-                    }
-
-               toString() {
-      return this.body.push(this.args)
-        .push(new Symbol("fn"))
-             .toString()
-                   }
-                   }
-
   function fn(bnd, argsk, body) {
     return function(...argsv) {
       var bnd;
@@ -366,21 +382,6 @@
     }
   }
 
-  class Macro {
-    constructor(bnd, args, body) {
-      this.bnd  = bnd;
-      this.args = args;
-      this.body = body;
-    }
-
-    call(bnd, args) {
-      return evl(this.bnd, invoke(bnd,this,args));
-    }
-
-    expand(bnd, args) {
-      return invoke(bnd,this,args);
-    }
-  }
 
   function bubbleParse(s, stack=[]) {
     var word = null,
