@@ -312,9 +312,9 @@
     class Slash   extends Syntax {};
     class Space   extends Syntax {};
 
-    LParen.toString = function () { return "("; }
+    LParen.toString  = function () { return "("; }
     LBrack.toString = function () { return "["; }
-    Dot.toString = function () { return "."; }
+    Dot.toString      = function () { return "."; }
 
     function each(c, fn) {
       c.forEach(fn);
@@ -942,22 +942,6 @@
 
   }
 
-  bubl.glider = glider;
-  bubl.bubbleParse = bubbleParse;
-  bubl.parse = bubbleParse;
-  bubl.evl = evl
-  bubl.Fn = Fn;
-  bubl.Macro = Macro;
-  bubl.Symbol = Symbol;
-
-  // bubl = this;
-
-
-    bubbleParse = bubl.bubbleParse;
-    evl = bubl.evl;
-    Fn = bubl.Fn;
-    Macro = bubl.Macro;
-
 
     function bubbleSCRiPT(bnd, s=null) {
       return bubbleParse(s.trim()).map(function(exp){
@@ -1184,6 +1168,15 @@
     w("mufn peek [a b] (send a 'peek b)")
     w("mufn pop [a b] (send a 'pop b)")
 
+
+    bubl.glider = glider;
+    bubl.bubbleParse = bubbleParse;
+    bubl.parse = bubbleParse;
+    bubl.evl = evl
+    bubl.Fn = Fn;
+    bubl.Macro = Macro;
+    bubl.Symbol = Symbol;
+
     window.m = m;
     window.w = w;
     window.bubl = bubl;
@@ -1193,7 +1186,6 @@
     window.Symbol = Symbol;
     window.List = List;
     window.Glider = Glider;
-
 
 
     window.addEventListener('load', function () {
