@@ -389,17 +389,10 @@
     c.forEach(fn);
   }
 
-  // Adds peek() to array
-  if (Array.prototype.peek == undefined) {
-    Array.prototype.peek = function() {
-      return this[this.length - 1];
+  var arry = {
+    peek: function(a) {
+      return a[a.length - 1];
     }
-
-    // Object.defineProperty(Array.prototype, 'last', {
-    //   get: function() {
-    //     return this[this.length-1];
-    //   }
-    // });
   }
 
   function fn(bnd, argsk, body) {
@@ -501,7 +494,7 @@
             break;
           }
 
-          while (stack.peek() == SingleQ) {
+          while (arry.peek(stack) == SingleQ) {
             stack.pop()
             count--;
             word = new Quoted(word);
@@ -514,13 +507,13 @@
           while (word != LParen) {
             list = list.push(word);
             // skip spaces
-            // if(stack.peek() == Space)
+            // if(arry.peek(stack) == Space)
             //   stack.pop()
             word = stack.pop();
             count--;
           }
 
-          while (stack.peek() == SingleQ) {
+          while (arry.peek(stack) == SingleQ) {
             stack.pop();
             count--;
             list = new Quoted(list);
@@ -565,7 +558,7 @@
             break;
           }
 
-          while (stack.peek() == SingleQ) {
+          while (arry.peek(stack) == SingleQ) {
             stack.pop()
             count--;
             word = new Quoted.new(word)
@@ -575,7 +568,7 @@
           while (word != LBrack) {
             tmp.push(word);
             // skip spaces
-            // if(stack.peek() == Space)
+            // if(arry.peek(stack) == Space)
             //   stack.pop()
             word = stack.pop();
             count--;
@@ -587,7 +580,7 @@
             glider = glider.push(tmp.pop());
           }
 
-          while (stack.peek() == SingleQ) {
+          while (arry.peek(stack) == SingleQ) {
             stack.pop();
             count--;
             glider = new Quoted(glider);
@@ -630,7 +623,7 @@
 
             if (depth > 0)
 
-              while (stack.peek() == SingleQ) {
+              while (arry.peek(stack) == SingleQ) {
                 stack.pop()
                 count--;
                 word = new Quoted(word)
@@ -654,7 +647,7 @@
                 d--;
                 count--;
 
-                // while (stack.peek() == SingleQ) {
+                // while (arry.peek(stack) == SingleQ) {
                 //  stack.pop()
                 //  word = new Quoted(word);
                 //  count--;
@@ -717,7 +710,7 @@
           break;
           //case '/':
           if (word) {
-            if (stack.peek() != Slash) {
+            if (arry.peek(stack) != Slash) {
               stack.push(new Symbol(word));
               word = null;
               stack.push(Slash);
@@ -764,7 +757,7 @@
           break;
       }
 
-      while (stack.peek() == SingleQ) {
+      while (arry.peek(stack) == SingleQ) {
         stack.pop();
         count--;
         word = new Quoted(word);
