@@ -369,8 +369,6 @@
       // });
     }
 
-            var bubl = {};
-
   function fn(bnd, argsk, body) {
     return function(...argsv) {
       var bnd;
@@ -1169,14 +1167,8 @@
     w("mufn peek [a b] (send a 'peek b)")
     w("mufn pop [a b] (send a 'pop b)")
 
-
-    bubl.glider = glider;
-    bubl.bubbleParse = bubbleParse;
-    bubl.parse = bubbleParse;
-    bubl.evl = evl
-    bubl.Fn = Fn;
-    bubl.Macro = Macro;
-    bubl.Symbol = Symbol;
+  var bubl = { glider, bubbleParse, parse: bubbleParse,
+          evl, Fn, Macro, Symbol };
 
     window.m = m;
     window.w = w;
