@@ -466,49 +466,6 @@
             break;
           }
 
-
-          // let y = progress;
-
-          //printRegister(stack, progress);
-
-          // {
-          //   let m = [];
-          //   m.push(word);
-          //   while(stack.peek()!=LParen) {
-          //     m.push(stack.pop())
-          //   }
-          //   k=m.pop();
-          //   if (m.peek()==Dot) {
-          //
-          //   }
-          // }
-          // { // build get send
-          //   let a = [],
-          //     b = [],
-          //     c,d;
-          //   c = stack.pop();
-          //   while (c!=LParam) {
-          //     switch (c) {
-          //       case Dot:
-          //       case Slash:
-          //         b.push(word);
-          //         break;
-          //       default:
-          //         a.push(word);
-          //         word = c;
-          //     }
-          //   }
-          //
-          //   if(c!=Dot && c!=Slash){
-          //     a.push(stack.pop());
-          //   } else {
-          //
-          //   }
-          //   word
-          //   stack.pop()
-          // }
-
-
           while (stack.peek() == SingleQ) {
             stack.pop()
             count--;
@@ -833,13 +790,10 @@
            if (s.callPattern==1) {
            //  x or x/x or x.x/x
               let q = evl(bnd, s);
-       // if (!exp.rest) { return q.call(bnd) }
                    if (q!=s)
         return evl(bnd, exp.pop().push(q));
                        else
                     return exp;
-              // return evl(bnd)
-           // return q.call(bnd, exp.rest)
              } else /* send */ {
                // call pattern 2
            // x.x or x.x.x or x.x...
@@ -858,10 +812,7 @@
            return s.call(bnd, exp.rest);
          } else if (s instanceof Macro) {
            return s.call(bnd, exp.rest);
-          } else {
-                return undefined;
-                  //return exp;
-                     }
+          } else { return undefined; }
         }
       case Glider:
         return exp.map(function(a) {return evl(bnd,a)});
@@ -879,29 +830,7 @@
 
   function invoke(bnd, fn, args) {
     var bnd = Object.create(bnd);
-
-    //(map vector fn.args args)
-    //fn.args.map(vector args)
-    //(map (fn [a b] bnd[a]) fn.args args)
-
-    // var q =fn.args.map(function(a,b) {return new Glider(b, new Glider(a));}, args)
-    // var q =fn.args.map(function(a,b) {return (glider a b);}, args)
-    // var q =fn.args.map(glider, args)
     var q =map(glider, fn.args, args)
-    // var q =(map glider fn.args args)
-
-
-    // each(fn.args, args, function(name, value) {
-    //   bnd[name]=value;
-    // });
-    //
-    // each(function(name, value) {
-    //   bnd[name]=value;
-    // }, fn.args, args);
-
-
-
-
 
     var x,y;
     x = fn.args; y = args;
@@ -915,9 +844,6 @@
       bnd[x.first] = y && y.first;
       x = x.rest; y = y && y.rest;
     }
-
-
-    //bnd = createBinding(bnd, args);
 
     return evl(bnd,fn);
   }
@@ -933,12 +859,8 @@
   function glider(...args) {
     var head = args.pop(), tail = args ;
     if(tail.length > 0)
-      // return push(glider(...tail), head);
-      // return new Glider(args.head, args.tail)
-      return new Glider(head, glider(...tail));
-       // push(glider(args.tail), args.head);
+       return new Glider(head, glider(...tail));
     return new Glider(head);
-
   }
 
 
