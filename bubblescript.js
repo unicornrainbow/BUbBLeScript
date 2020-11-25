@@ -392,6 +392,21 @@
   var arry = {
     peek: function(a) {
       return a[a.length - 1];
+    },
+    toList: function(a) {
+      var list = new List(a.pop());
+      while (a.length > 0) {
+        list = list.push(a.pop());
+      }
+      return list;
+    },
+
+    toGlider: function(a) {
+      var head = a.pop(),
+         tail = a;
+       if (tail.length > 0)
+           return new Glider(head, arry.toGlider(tail));
+       return new Glider(head);
     }
   }
 
@@ -894,14 +909,17 @@
     return a.push(b);
   }
 
-  function glider(...args) {
-    var head = args.pop(),
-      tail = args;
-    if (tail.length > 0)
-      return new Glider(head, glider(...tail));
-    return new Glider(head);
+  function list(...args) {
+    return arry.toList(args);
   }
 
+  function glider(...args) {
+    return arry.toGlider(args);
+  }
+
+  function quote(m) {
+    return new Quoted(m);
+  }
 
   function bubbleSCRiPT(bnd, s = null) {
     return bubbleParse(s.trim()).map(function(exp) {
@@ -977,12 +995,7 @@
       x = args.push(new Symbol('fn'));
       var fn = evl(bnd, x);
       return function(...args) {
-        var list = new List(args.pop());
-        while (args.length > 0) {
-          list = list.push(args.pop());
-        }
-
-        return fn.call(bnd, list);
+        return fn.call(bnd, arry.toList(args));
       }
     },
 
@@ -1161,9 +1174,40 @@
     return bubbleParse(s);
   };
 
-  w("muf push (fn [a b] (send a 'push b))")
-  w("(muf mufn (macro [name & z] \
-      (list 'muf name (push z 'fn)))) ")
+
+  (function() {
+
+    function muf(...args) {
+      var muf = new Symbol('muf');
+      return evl(bnd, push(arry.toList(args), muf));
+    }
+
+     let _push = new Symbol('push'),
+         fn = new Symbol('fn'),
+         a = new Symbol('a'),
+         b = new Symbol('b'),
+         send = new Symbol('send'),
+         mufn = new Symbol('mufn'),
+         macro = new Symbol('macro'),
+         name = new Symbol('name'),
+         amp = new Symbol('&'),
+         z = new Symbol('z'),
+        _list = new Symbol('list'),
+        _muf = new Symbol('muf');
+
+
+     // muf push (fn [a b] (send a 'push b))
+     muf(_push, list(fn, glider(a, b),
+          list(send, a, quote(_push), b)));
+
+     // (muf mufn (macro [name & z]
+     //     (list 'muf name (push z 'fn))))
+     muf(mufn, list(macro, glider(name,amp,z),
+         list(_list,quote(_muf), name,
+            list(_push, z, quote(fn)))));
+
+  })();
+
   w("mufn peek [a b] (send a 'peek b)")
   w("mufn pop [a b] (send a 'pop b)")
 
