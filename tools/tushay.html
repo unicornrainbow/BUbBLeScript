@@ -1,0 +1,155 @@
+<body dir=rtl>
+
+<prompt>> <cursor id="cursor">_</cursor></prompt>
+
+<style>
+  body {
+    font-size: 24pt;
+    margin: 0;
+    background: aquamarine;
+    background: deeppink;
+    color: #befbbc;
+    /* direction: rtl; */
+    /* unicode-bidi: bidi-override; */
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+  }
+  prompt {
+    display: block;
+    color: #ff7bf7;
+    /* position: fixed; */
+    bottom: 0;
+    padding: 0 .7em;
+    /* margin: 0 -.7em; */
+    /* width: 100%; */
+    border-top: 1px solid #ff7bf7;
+    line-height: 1.6em;
+    background: #ff5eed;
+    color: #befbbc;
+    height: 1.6em;
+    /* unicode-bidi: bidi-override; */
+}
+  cursor {
+    height: 100%;
+    display: inline-block;
+    animation: blink;
+    animation: blink 1s step-start .5s infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; }}
+</style>
+
+<script type='text/javascript' src="../bubblescript.js"></script>
+<script type='text/bubblescript'>
+
+  // Aliases
+  muf muff muf
+  muf do list
+
+  muf get-id (fn [a]
+    (document.getElementById a))
+
+  muf mufmacro (macro [name args body]
+    (list 'muf name
+      (list 'macro args body)))
+
+  mufmacro dgi [a],
+    (list 'document.getElementById a)
+  // blert (+ 7 7 7)
+
+  // blert (tail [1 2 3])
+
+  // muf dgi (macro [a]
+  //   (list 'document.getElementById a))
+
+  // blert (dgi "cursor")
+
+  muf cursor (dgi "cursor")
+
+  muf prompt cursor.parentNode
+
+  muf br (fn [meow]
+    (document.createElement "br"))
+
+  muf print (fn [msg]
+    // (window.console.log prompt msg)
+    (document.body.insertBefore
+      (document.createTextNode msg)
+      prompt))
+
+  muf print (fn [msg]
+    (print-node (document.createTextNode msg))
+    msg)
+
+  muf print-node (fn [node]
+    (document.body.insertBefore
+      node
+      prompt))
+
+  ;muf println (fn [msg]
+  ;  (print msg (br)))
+
+  muf println (fn [msg]
+    // (window.console.log "Printing" msg)
+    // (print (document.createTextNode msg))
+    (print msg)
+    (print-node (br))
+    msg)
+
+  muf typeChar (fn [ch]
+    (prompt.insertBefore
+      (document.createTextNode ch)
+      cursor))
+
+  muf clear (fn []
+    (export prompt 'innerHTML "💨 ")
+    (prompt.append cursor))
+
+  muf backspace (fn [q]
+    (prompt.removeChild
+      cursor.previousSibling))
+
+  muff read (fn []
+    (prompt.innerText.slice 2
+      (- prompt.innerText.length 1)))
+
+  muff 😋 (fn []
+    (let [v (read)]
+      (println v)
+      (let [r (evl (parse v))]
+        // (print (document.createTextNode " ;> "))
+        (print " ;> ")
+        (println r))
+      (clear)))
+
+  muf arrow-left (fn []
+    (prompt.insertBefore cursor
+      cursor.previousSibling))
+
+  muf arrow-right (fn []
+    (prompt.insertBefore
+      cursor.nextSibling
+      cursor))
+
+  // window.avl -> window.addEventListener ucp -> (unique character pattern)
+  window.addEventListener 'keydown,
+    (jsfn [e]
+      (window.console.log e.key)
+      (if (= e.key "Backspace")
+        (do (e.preventDefault)
+            (backspace))
+      (if (= e.key "ArrowRight")
+        (arrow-right)
+      (if (= e.key "ArrowLeft")
+        (arrow-left)))))
+        
+
+  window.addEventListener 'keypress,
+    (jsfn [e]
+      (if (= e.key "Enter")
+        (😋)
+        (typeChar e.key)))
+
+  (window.xoxo)
+
+</script>
