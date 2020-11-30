@@ -150,6 +150,25 @@
         (😋)
         (typeChar e.key)))
 
+
+
+  mufn set-direction [dir],
+    (export document.body 'dir dir)
+
+  mufn get-direction [],
+    document.body.dir
+
+  mufn ltr [],
+    (set-direction "ltr")
+
+  mufn rtl [],
+    (set-direction "rtl")
+
+  mufn trtl [],
+    (if (= (get-direction) "rtl")
+      (ltr)
+      (rtl))
+
   (window.xoxo)
 
 </script>
