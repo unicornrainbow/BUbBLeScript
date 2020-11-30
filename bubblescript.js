@@ -14,7 +14,8 @@
       parse() {}                //             {} ()esrap
   }                             //                            {
 
-  var emptyList;
+  var emptyList,
+    emptyGlider;
 
   class List {
     constructor(head, tail) {
@@ -137,12 +138,29 @@
 
   }
 
-  emptyList = {
-    isEmpty: true,
-    push: function(val) {
+  // emptyList = {
+  //   isEmpty: true,
+  //   push: function(val) {
+  //     return new List(val);
+  //   }
+  // }
+
+  class EmptyList extends List {
+    get isEmpty() { return true; }
+    push(val) {
       return new List(val);
     }
+    toString() {
+      return "()";
+    }
+    reverse() {
+      return this;
+    }
+
+    map() { return this; }
+
   }
+  emptyList = new EmptyList;
 
   class Glider {
     constructor(head, tail) {
@@ -157,8 +175,10 @@
       return new Glider(val, this);
     }
     pop() {
-      return this.tail;
+      return this.tail || emptyGlider;
     }
+
+    get isEmpty() { return false; }
 
     conj(...val) {
       return val.reduce(function(i, memo) {
@@ -221,11 +241,11 @@
         var c = new Glider(b.peek());
         b = b.pop();
 
-        while (b) {
+        while (!b.isEmpty) {
           c = c.push(b.peek());
           b = b.pop();
         }
-        while (c) {
+        while (!c.isEmpty) {
           a = a.push(c.peek());
           c = c.pop();
         }
@@ -268,6 +288,19 @@
     }
 
   }
+
+  class EmptyGlider extends Glider {
+    get isEmpty() { return true }
+
+    push (val) {
+      return new Glider(val);
+    }
+
+    toString () {
+      return "[]";
+    }
+  }
+  emptyGlider = new EmptyGlider;
 
   class Symbol {
 
@@ -515,7 +548,8 @@
 
           if (word == null) word = stack.pop();
           if (word == LParen) {
-            stack.push(new List)
+            // stack.push(new List)
+            stack.push(emptyList);
             word = null;
             break;
           }
@@ -578,7 +612,8 @@
             count--;
           }
           if (word == LBrack) {
-            stack.push(new Glider);
+            // stack.push(new Glider);
+            stack.push(emptyGlider);
             depth--;
             word = null;
             break;
@@ -864,11 +899,11 @@
         } else if (s instanceof List) {
           return evl(bnd, exp.pop().push(evl(bnd, s)))
         } else if (s instanceof Fn) {
-          return s.call(bnd, exp.rest);
+          return s.call(bnd, exp.pop());
         } else if (s instanceof Function) {
-          return s.call(bnd, exp.rest);
+          return s.call(bnd, exp.pop());
         } else if (s instanceof Macro) {
-          return s.call(bnd, exp.rest);
+          return s.call(bnd, exp.pop());
         } else {
           return undefined;
         }
