@@ -176,7 +176,8 @@
 
 
   mufn set-direction [dir],
-    (export document.body 'dir dir)
+    (export document.body 'dir dir),
+    (export localStorage 'dir dir)
 
   mufn get-direction [],
     document.body.dir
@@ -192,6 +193,8 @@
       (ltr)
       (rtl))
 
+  // Initialize document direction.
+  (export document.body 'dir localStorage.dir)
   (window.xoxo)
 
 </script>

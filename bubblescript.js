@@ -977,6 +977,7 @@
     window: window,
     document: document,
     console: console,
+    localStorage: localStorage,
     Array: Array,
 
     // muf: function(args) {
