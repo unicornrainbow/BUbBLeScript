@@ -134,21 +134,13 @@
   muff 😋 (fn [pow]
     (let [v (read)]
       (if pow
-        // (console.log (new Array (list (pop (parse v)))))
-        // (console.log (list (pop (parse v))))
-
         (let [v (new Array (list (pop (parse v))))
               r (evl v)]
           (println v)
-          // (console.log r)
           (print " ;> ")
           (println r))
-        // (let [r (evl (list (pop (parse v))))]
-        //   (print " ;> ")
-        //   (println r))
         (let [r (evl (parse v))]
           (println v)
-          // (print (document.createTextNode " ;> "))
           (print " ;> ")
           (println r)))
       (clear)))
@@ -179,7 +171,6 @@
     (jsfn [e]
       (if (= e.key "Enter")
         (do
-          (console.log e)
           (😋 e.shiftKey))
         (typeChar e.key)))
 
