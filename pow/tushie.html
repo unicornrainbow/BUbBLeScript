@@ -1,8 +1,25 @@
-<body dir=rtl>
+<body>
 
-<prompt>> <cursor id="cursor">_</cursor></prompt>
+  <div id="y">
+     <prompt>> <cursor id="cursor">_</cursor></prompt>
+  </div>
 
 <style>
+  #y {
+    width: 500px;
+    /* height: 600px; */
+    position: fixed;
+    bottom: 0;
+    right: 10%;
+    border: 1px solid red;
+    height :400px;
+    overflow-y: scroll;
+  }
+  /* #y prompt { */
+    /* position: fixed; */
+    /* width: 500px; */
+    /* bottom: 0; */
+  /* } */
   body {
     font-size: 24pt;
     margin: 0;
@@ -67,13 +84,14 @@
   muf cursor (dgi "cursor")
 
   muf prompt cursor.parentNode
+  muf y-el (dgi "y")
 
   muf br (fn [meow]
     (document.createElement "br"))
 
   muf print (fn [msg]
     // (window.console.log prompt msg)
-    (document.body.insertBefore
+    (y-el.insertBefore
       (document.createTextNode msg)
       prompt))
 
@@ -82,7 +100,7 @@
     msg)
 
   muf print-node (fn [node]
-    (document.body.insertBefore
+    (y-el.insertBefore
       node
       prompt))
 
@@ -142,14 +160,13 @@
         (arrow-right)
       (if (= e.key "ArrowLeft")
         (arrow-left)))))
-        
+
 
   window.addEventListener 'keypress,
     (jsfn [e]
       (if (= e.key "Enter")
         (😋)
         (typeChar e.key)))
-
 
 
   mufn set-direction [dir],
