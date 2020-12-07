@@ -977,6 +977,7 @@
     window: window,
     document: document,
     console: console,
+    Array: Array,
 
     // muf: function(args) {
     //   // var a, b, bnd = this;
@@ -1231,6 +1232,16 @@
 
       m = evl(bnd, m);
       return m.expand(bnd, l.rest);
+    },
+    "new": function(xyz) {
+      var bnd = this,
+        m = xyz.first,
+        n = xyz.rest;
+
+        m = evl(bnd, m);
+        n = n.map(function(q) { return evl(bnd, q); });
+
+        return new m(...n.toArray());
     }
   }
 
