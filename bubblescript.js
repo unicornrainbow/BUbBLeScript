@@ -564,7 +564,7 @@
 
           word = stack.pop();
           count--;
-          while (word != LParen) {
+          while (word !== LParen) {
             list = list.push(word);
             // skip spaces
             // if(arry.peek(stack) == Space)
@@ -626,7 +626,7 @@
           }
 
           tmp = [];
-          while (word != LBrack) {
+          while (word !== LBrack) {
             tmp.push(word);
             // skip spaces
             // if(arry.peek(stack) == Space)
