@@ -1,7 +1,7 @@
 <body>
 
   <div id="y">
-     <prompt>> <cursor id="cursor">_</cursor></prompt>
+     <prompt>🧁 <cursor id="cursor">_</cursor></prompt>
   </div>
 
 <style>
@@ -119,8 +119,8 @@
       (document.createTextNode ch)
       cursor))
 
-  muf clear (fn []
-    (export prompt 'innerHTML "💨 ")
+  muf clear (fn [🍦]
+    (export prompt 'innerHTML (+ "🧁 " 🍦))
     (prompt.append cursor))
 
   muf backspace (fn [q]
@@ -128,22 +128,30 @@
       cursor.previousSibling))
 
   muff read (fn []
-    (prompt.innerText.slice 2
+    (prompt.innerText.slice 3
       (- prompt.innerText.length 1)))
 
+  // muff 😋 (fn [pow]
+  //   (let [v (read)]
+  //     (if pow
+  //       (let [v (new Array (list (pop (parse v))))
+  //             r (evl v)]
+  //         (println v)
+  //         (print " ;> ")
+  //         (println r))
+  //       (let [r (evl (parse v))]
+  //         (println v)
+  //         (print " ;> ")
+  //         (println r)))
+  //     (clear)))
+
   muff 😋 (fn [pow]
-    (let [v (read)]
-      (if pow
-        (let [v (new Array (list (pop (parse v))))
-              r (evl v)]
-          (println v)
-          (print " ;> ")
-          (println r))
-        (let [r (evl (parse v))]
-          (println v)
-          (print " ;> ")
-          (println r)))
-      (clear)))
+    (let [v (read)
+          r (evl (parse v))]
+      (println v)
+      (print " ;> ")
+      (println r))
+    (clear ""))
 
   muf arrow-left (fn []
     (prompt.insertBefore cursor
@@ -170,8 +178,9 @@
   window.addEventListener 'keypress,
     (jsfn [e]
       (if (= e.key "Enter")
-        (do
-          (😋 e.shiftKey))
+        (if e.shiftKey
+          (wrap-list)
+          (😋))
         (typeChar e.key)))
 
 
@@ -195,6 +204,8 @@
 
   // Initialize document direction.
   (export document.body 'dir localStorage.dir)
-  (window.xoxo)
+
+  mufn wrap-list [],
+    (clear (+ " (" (read) ")"))
 
 </script>
