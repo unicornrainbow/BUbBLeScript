@@ -6,14 +6,16 @@
 
 <style>
   #y {
-    width: 500px;
+    width: 420px;
     /* height: 600px; */
     position: fixed;
     bottom: 0;
     right: 10%;
-    border: 1px solid red;
-    height :400px;
+    border: 1px solid #ff97df;
+    height :350px;
     overflow-y: scroll;
+    font-size: 1.2em;
+    /* padding: 4pt; */
   }
   /* #y prompt { */
     /* position: fixed; */
@@ -21,20 +23,24 @@
     /* bottom: 0; */
   /* } */
   body {
-    font-size: 24pt;
+    font-size: 16pt;
     margin: 0;
-    background: aquamarine;
-    background: deeppink;
+    background: snow;
+    /* background: deeppink; */
     color: #befbbc;
+    color: #ff97df;
+    color: snow;
+    color: fuchsia;
     /* direction: rtl; */
     /* unicode-bidi: bidi-override; */
     bottom: 0;
     position: absolute;
     width: 100%;
+    font-family: cursive;
   }
   prompt {
     display: block;
-    color: #ff7bf7;
+    color: snow;
     /* position: fixed; */
     bottom: 0;
     padding: 0 .7em;
@@ -44,8 +50,11 @@
     line-height: 1.6em;
     background: #ff5eed;
     color: #befbbc;
-    height: 1.6em;
+    color: snow;
+    /* height: 1.6em; */
+    height: min-content;
     /* unicode-bidi: bidi-override; */
+    /* margin: 0 -4pt; */
 }
   cursor {
     height: 100%;
@@ -54,6 +63,11 @@
     animation: blink 1s step-start .5s infinite;
   }
   @keyframes blink { 50% { opacity: 0; }}
+
+  em.comment {
+    /* color: lilac; */
+    color: plum;
+  }
 </style>
 
 <script type='text/javascript' src="../bubblescript.js"></script>
@@ -62,6 +76,8 @@
   // Aliases
   muf muff muf
   muf do list
+  muf : muf
+  muf f: mufn
 
   muf get-id (fn [a]
     (document.getElementById a))
@@ -114,6 +130,9 @@
     (print-node (br))
     msg)
 
+  f: lf [], // line feed
+    (print-node (br))
+
   muf typeChar (fn [ch]
     (prompt.insertBefore
       (document.createTextNode ch)
@@ -145,13 +164,26 @@
   //         (println r)))
   //     (clear)))
 
+  f: scroll [],
+    (export y-el 'scrollTop 10000)
+
   muff 😋 (fn [pow]
     (let [v (read)
           r (evl (parse v))]
       (println v)
-      (print " ;> ")
-      (println r))
+      // (print " ;> ")
+      // (println r))
+      (print-comment (+ "//> " r)))
+    (scroll)
     (clear ""))
+
+  f: print-comment [comment],
+    (let [node
+         (document.createElement "em")]
+      (export node 'innerText comment)
+      (node.classList.add "comment")
+      (print-node node)),
+    (lf)
 
   muf arrow-left (fn []
     (prompt.insertBefore cursor
@@ -201,6 +233,9 @@
     (if (= (get-direction) "rtl")
       (ltr)
       (rtl))
+
+  f: reload [],
+    (window.location.reload)
 
   // Initialize document direction.
   (export document.body 'dir localStorage.dir)
