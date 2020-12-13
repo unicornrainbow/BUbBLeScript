@@ -167,13 +167,19 @@
   f: scroll [],
     (export y-el 'scrollTop 10000)
 
+  (muf history (list))
+  (muf chistory history)
+
   muff 😋 (fn [pow]
     (let [v (read)
-          r (evl (parse v))]
+          q (parse v)
+          r (evl q)]
       (println v)
       // (print " ;> ")
       // (println r))
-      (print-comment (+ "//> " r)))
+      (print-comment (+ "//> " r))
+      (muf history (push history v))
+      (muf chistory history))
     (scroll)
     (clear ""))
 
@@ -204,8 +210,14 @@
       (if (= e.key "ArrowRight")
         (arrow-right)
       (if (= e.key "ArrowLeft")
-        (arrow-left)))))
+        (arrow-left)
+      (if (= e.key "ArrowUp")
+        (arrow-up))))))
 
+  mufn arrow-up [],
+    (clear (peek chistory)),
+    (muf chistory (pop chistory))
+    // (blert "cookies")
 
   window.addEventListener 'keypress,
     (jsfn [e]
