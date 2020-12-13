@@ -169,6 +169,7 @@
 
   (muf history (list))
   (muf chistory history)
+  (muf bhistory (list))
 
   muff 😋 (fn [pow]
     (let [v (read)
@@ -212,12 +213,21 @@
       (if (= e.key "ArrowLeft")
         (arrow-left)
       (if (= e.key "ArrowUp")
-        (arrow-up))))))
+        (arrow-up)
+      (if (= e.key "ArrowDown")
+        (arrow-down)))))))
 
   mufn arrow-up [],
+    (muf bhistory (push bhistory chistory)),
     (clear (peek chistory)),
     (muf chistory (pop chistory))
     // (blert "cookies")
+
+  (mufn arrow-down []
+    (muf chistory (peek bhistory))
+    (muf bhistory (pop bhistory))
+    (clear (peek chistory)))
+
 
   window.addEventListener 'keypress,
     (jsfn [e]
