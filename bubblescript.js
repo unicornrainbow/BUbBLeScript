@@ -1076,7 +1076,7 @@
         icecream = sunshine.rest;
       }
 
-      hamburgers.rest.each(function(xoxo) {
+      return hamburgers.rest.each(function(xoxo) {
         return elves(pineapple, xoxo);
       })
     },
