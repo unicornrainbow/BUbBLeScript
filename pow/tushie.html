@@ -139,8 +139,10 @@
       cursor))
 
   muf clear (fn [🍦]
-    (export prompt 'innerHTML (+ "🧁 " 🍦))
-    (prompt.append cursor))
+    (export prompt 'innerHTML "🧁 ")
+    (prompt.append cursor)
+    (send (send 🍦 'split "") 'forEach
+      (jsfn [c] (typeChar c))))
 
   muf backspace (fn [q]
     (prompt.removeChild
