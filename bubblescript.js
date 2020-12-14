@@ -891,10 +891,15 @@
             if (!exp.rest) {
               return q[s.fn]()
             }
-            return q[s.fn](...exp.rest.map(
-              function(a) {
-                return evl(bnd, a)
-              }).toArray())
+            try {
+              return q[s.fn](...exp.rest.map(
+                function(a) {
+                  return evl(bnd, a)
+                }).toArray())
+            } catch (e) {
+              console.log(s.fn);
+              throw e;
+            }
           }
         } else if (s instanceof List) {
           return evl(bnd, exp.pop().push(evl(bnd, s)))
@@ -1306,13 +1311,28 @@
   window.addEventListener('load', function() {
     frosty = document.querySelectorAll(
       "script[type='text/bubblescript']")
-    frosty.forEach(function(ice) {
+    frosty.forEach(function(mustard) {
       try {
-        bubbleSCRiPT(bnd, ice.innerText);
+        if (mustard.src) {
+          // console.log(ice.src);
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+
+              // console.log(this.responseText);
+              bubbleSCRiPT(bnd, this.responseText);
+            }
+          }
+          xhttp.open("GET", mustard.src, true);
+          xhttp.send();
+        } else {
+          bubbleSCRiPT(bnd, mustard.innerText);
+        }
       } catch (e) {
         console.log(e)
       }
     })
   });
+
 
 })();

@@ -1,0 +1,182 @@
+
+
+  // Aliases
+  muf muff muf
+  muf do list
+  muf : muf
+  muf f: mufn
+
+  muf get-id (fn [a]
+    (document.getElementById a))
+
+  muf mufmacro (macro [name args body]
+    (list 'muf name
+      (list 'macro args body)))
+
+  mufmacro dgi [a],
+    (list 'document.getElementById a)
+
+  muf cursor (dgi "cursor")
+
+  muf prompt cursor.parentNode
+  muf y-el (dgi "y")
+
+  muf br (fn [meow]
+    (document.createElement "br"))
+
+  muf print (fn [msg]
+    (y-el.insertBefore
+      (document.createTextNode msg)
+      prompt))
+
+  muf print (fn [msg]
+    (print-node (document.createTextNode msg))
+    msg)
+
+  muf print-node (fn [node]
+    (y-el.insertBefore
+      node
+      prompt))
+
+  ;muf println (fn [msg]
+  ;  (print msg (br)))
+
+  muf println (fn [msg]
+    // (window.console.log "Printing" msg)
+    // (print (document.createTextNode msg))
+    (print msg)
+    (print-node (br))
+    msg)
+
+  f: lf [], // line feed
+    (print-node (br))
+
+  muf typeChar (fn [ch]
+    (prompt.insertBefore
+      (document.createTextNode ch)
+      cursor))
+
+  muf clear (fn [🍦]
+    (export prompt 'innerHTML "🧁 ")
+    (prompt.append cursor)
+    (send (send 🍦 'split "") 'forEach
+      (jsfn [c] (typeChar c))))
+
+  f: bg [color],
+    (export localStorage 'bg color),
+    (export document.body.style 'background-color color)
+
+  muf backspace (fn [q]
+    (prompt.removeChild
+      cursor.previousSibling))
+
+  muff read (fn []
+    (export cursor 'innerText "")
+    (let [q (prompt.innerText.slice 3
+      prompt.innerText.length)]
+        (export cursor 'innerText "_")
+        q))
+
+  f: scroll [],
+    (export y-el 'scrollTop 10000)
+
+  (muf history (list))
+  (muf chistory history)
+  (muf bhistory (list))
+
+  muff 😋 (fn [pow]
+    (cursor.remove)
+    (let [v (read)
+          q (parse v)
+          r (evl q)]
+      (println v)
+      (print-comment (+ "//> " r))
+      (muf history (push history v))
+      (muf chistory history))
+    (scroll)
+    (clear ""))
+
+  f: print-comment [comment],
+    (let [node
+         (document.createElement "em")]
+      (export node 'innerText comment)
+      (node.classList.add "comment")
+      (print-node node)),
+    (lf)
+
+  muf arrow-left (fn []
+    (prompt.insertBefore cursor
+      cursor.previousSibling))
+
+  muf arrow-right (fn []
+    (prompt.insertBefore
+      cursor.nextSibling
+      cursor))
+
+  // window.avl -> window.addEventListener ucp -> (unique character pattern)
+  window.addEventListener 'keydown,
+    (jsfn [e]
+      (window.console.log e.key)
+      (if (= e.key "Backspace")
+        (do (e.preventDefault)
+            (backspace))
+      (if (= e.key "ArrowRight")
+        (arrow-right)
+      (if (= e.key "ArrowLeft")
+        (arrow-left)
+      (if (= e.key "ArrowUp")
+        (arrow-up)
+      (if (= e.key "ArrowDown")
+        (arrow-down)))))))
+
+  mufn arrow-up [],
+    (muf bhistory (push bhistory chistory)),
+    (clear (peek chistory)),
+    (muf chistory (pop chistory))
+
+  (mufn arrow-down []
+    (muf chistory (peek bhistory))
+    (muf bhistory (pop bhistory))
+    (clear (peek chistory)))
+
+  window.addEventListener 'keypress,
+    (jsfn [e]
+      (if (= e.key "Enter")
+        (if e.shiftKey
+          (wrap-list)
+          (😋))
+        (typeChar e.key)))
+
+  mufn set-direction [dir],
+    (export document.body 'dir dir),
+    (export localStorage 'dir dir)
+
+  mufn get-direction [],
+    document.body.dir
+
+  mufn ltr [],
+    (set-direction "ltr")
+
+  mufn rtl [],
+    (set-direction "rtl")
+
+  mufn trtl [],
+    (if (= (get-direction) "rtl")
+      (ltr)
+      (rtl))
+
+  f: reload [],
+    (window.location.reload)
+
+  // Initialize document direction.
+  (export document.body 'dir localStorage.dir)
+  (export document.body.style 'background-color localStorage.bg)
+
+  mufn wrap-list [],
+    (clear (+ "(" (read) ")"))
+
+  // ns cru
+  // ns string
+  // class Chain { }
+  // (muf split [s pon]
+  //    (s.split pon))

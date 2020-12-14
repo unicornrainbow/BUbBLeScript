@@ -1,254 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+      #y {
+        width: 420px;
+        /* height: 600px; */
+        position: fixed;
+        bottom: 0;
+        right: 10%;
+        /* border: 1px solid #ff97df; */
+        max-height :350px;
+        overflow-y: scroll;
+        font-size: 1.2em;
+        /* padding: 4pt; */
+        unicode-bidi: bidi-override;
+      }
+
+
+      /* #y prompt { */
+        /* position: fixed; */
+        /* width: 500px; */
+        /* bottom: 0; */
+      /* } */
+      body {
+        font-size: 16pt;
+        margin: 0;
+        background: snow;
+        /* background: deeppink; */
+        color: #befbbc;
+        color: #ff97df;
+        color: snow;
+        color: fuchsia;
+        /* direction: rtl; */
+        /* unicode-bidi: bidi-override; */
+        bottom: 0;
+        position: absolute;
+        width: 100%;
+        font-family: cursive;
+      }
+      prompt {
+        display: block;
+        color: snow;
+        /* position: fixed; */
+        bottom: 0;
+        padding: 0 .7em;
+        /* margin: 0 -.7em; */
+        /* width: 100%; */
+        border-top: 1px solid #ff7bf7;
+        line-height: 1.6em;
+        background: #ff5eed;
+        color: #befbbc;
+        color: snow;
+        /* height: 1.6em; */
+        height: min-content;
+        unicode-bidi: bidi-override;
+        /* margin: 0 -4pt; */
+      }
+      cursor {
+        height: 100%;
+        display: inline-block;
+        animation: blink;
+        animation: blink 1s step-start .5s infinite;
+        /* width: 0; */
+
+      }
+      @keyframes blink { 50% { opacity: 0; }}
+
+      em.comment {
+        /* color: lilac; */
+        color: plum;
+      }
+    </style>
+
+  </head>
 <body>
 
   <div id="y">
      <prompt>🧁 <cursor id="cursor">_</cursor></prompt>
   </div>
 
-<style>
-  #y {
-    width: 420px;
-    /* height: 600px; */
-    position: fixed;
-    bottom: 0;
-    right: 10%;
-    /* border: 1px solid #ff97df; */
-    max-height :350px;
-    overflow-y: scroll;
-    font-size: 1.2em;
-    /* padding: 4pt; */
-    unicode-bidi: bidi-override;
-  }
-  /* #y prompt { */
-    /* position: fixed; */
-    /* width: 500px; */
-    /* bottom: 0; */
-  /* } */
-  body {
-    font-size: 16pt;
-    margin: 0;
-    background: snow;
-    /* background: deeppink; */
-    color: #befbbc;
-    color: #ff97df;
-    color: snow;
-    color: fuchsia;
-    /* direction: rtl; */
-    /* unicode-bidi: bidi-override; */
-    bottom: 0;
-    position: absolute;
-    width: 100%;
-    font-family: cursive;
-  }
-  prompt {
-    display: block;
-    color: snow;
-    /* position: fixed; */
-    bottom: 0;
-    padding: 0 .7em;
-    /* margin: 0 -.7em; */
-    /* width: 100%; */
-    border-top: 1px solid #ff7bf7;
-    line-height: 1.6em;
-    background: #ff5eed;
-    color: #befbbc;
-    color: snow;
-    /* height: 1.6em; */
-    height: min-content;
-    unicode-bidi: bidi-override;
-    /* margin: 0 -4pt; */
-}
-  cursor {
-    height: 100%;
-    display: inline-block;
-    animation: blink;
-    animation: blink 1s step-start .5s infinite;
-    /* width: 0; */
 
-  }
-  @keyframes blink { 50% { opacity: 0; }}
-
-  em.comment {
-    /* color: lilac; */
-    color: plum;
-  }
-</style>
-
-<script type='text/javascript' src="../bubblescript.js"></script>
-<script type='text/bubblescript'>
-
-  // Aliases
-  muf muff muf
-  muf do list
-  muf : muf
-  muf f: mufn
-
-  muf get-id (fn [a]
-    (document.getElementById a))
-
-  muf mufmacro (macro [name args body]
-    (list 'muf name
-      (list 'macro args body)))
-
-  mufmacro dgi [a],
-    (list 'document.getElementById a)
-
-  muf cursor (dgi "cursor")
-
-  muf prompt cursor.parentNode
-  muf y-el (dgi "y")
-
-  muf br (fn [meow]
-    (document.createElement "br"))
-
-  muf print (fn [msg]
-    (y-el.insertBefore
-      (document.createTextNode msg)
-      prompt))
-
-  muf print (fn [msg]
-    (print-node (document.createTextNode msg))
-    msg)
-
-  muf print-node (fn [node]
-    (y-el.insertBefore
-      node
-      prompt))
-
-  ;muf println (fn [msg]
-  ;  (print msg (br)))
-
-  muf println (fn [msg]
-    // (window.console.log "Printing" msg)
-    // (print (document.createTextNode msg))
-    (print msg)
-    (print-node (br))
-    msg)
-
-  f: lf [], // line feed
-    (print-node (br))
-
-  muf typeChar (fn [ch]
-    (prompt.insertBefore
-      (document.createTextNode ch)
-      cursor))
-
-  muf clear (fn [🍦]
-    (export prompt 'innerHTML "🧁 ")
-    (prompt.append cursor)
-    (send (send 🍦 'split "") 'forEach
-      (jsfn [c] (typeChar c))))
-
-  f: bg [color],
-    (export localStorage 'bg color),
-    (export document.body.style 'background-color color)
-
-  muf backspace (fn [q]
-    (prompt.removeChild
-      cursor.previousSibling))
-
-  muff read (fn []
-    (export cursor 'innerText "")
-    (let [q (prompt.innerText.slice 3
-      prompt.innerText.length)]
-        (export cursor 'innerText "_")
-        q))
-
-  f: scroll [],
-    (export y-el 'scrollTop 10000)
-
-  (muf history (list))
-  (muf chistory history)
-  (muf bhistory (list))
-
-  muff 😋 (fn [pow]
-    (cursor.remove)
-    (let [v (read)
-          q (parse v)
-          r (evl q)]
-      (println v)
-      (print-comment (+ "//> " r))
-      (muf history (push history v))
-      (muf chistory history))
-    (scroll)
-    (clear ""))
-
-  f: print-comment [comment],
-    (let [node
-         (document.createElement "em")]
-      (export node 'innerText comment)
-      (node.classList.add "comment")
-      (print-node node)),
-    (lf)
-
-  muf arrow-left (fn []
-    (prompt.insertBefore cursor
-      cursor.previousSibling))
-
-  muf arrow-right (fn []
-    (prompt.insertBefore
-      cursor.nextSibling
-      cursor))
-
-  // window.avl -> window.addEventListener ucp -> (unique character pattern)
-  window.addEventListener 'keydown,
-    (jsfn [e]
-      (window.console.log e.key)
-      (if (= e.key "Backspace")
-        (do (e.preventDefault)
-            (backspace))
-      (if (= e.key "ArrowRight")
-        (arrow-right)
-      (if (= e.key "ArrowLeft")
-        (arrow-left)
-      (if (= e.key "ArrowUp")
-        (arrow-up)
-      (if (= e.key "ArrowDown")
-        (arrow-down)))))))
-
-  mufn arrow-up [],
-    (muf bhistory (push bhistory chistory)),
-    (clear (peek chistory)),
-    (muf chistory (pop chistory))
-
-  (mufn arrow-down []
-    (muf chistory (peek bhistory))
-    (muf bhistory (pop bhistory))
-    (clear (peek chistory)))
-
-  window.addEventListener 'keypress,
-    (jsfn [e]
-      (if (= e.key "Enter")
-        (if e.shiftKey
-          (wrap-list)
-          (😋))
-        (typeChar e.key)))
-
-  mufn set-direction [dir],
-    (export document.body 'dir dir),
-    (export localStorage 'dir dir)
-
-  mufn get-direction [],
-    document.body.dir
-
-  mufn ltr [],
-    (set-direction "ltr")
-
-  mufn rtl [],
-    (set-direction "rtl")
-
-  mufn trtl [],
-    (if (= (get-direction) "rtl")
-      (ltr)
-      (rtl))
-
-  f: reload [],
-    (window.location.reload)
-
-  // Initialize document direction.
-  (export document.body 'dir localStorage.dir)
-  (export document.body.style 'background-color localStorage.bg)
-
-  mufn wrap-list [],
-    (clear (+ "(" (read) ")"))
-
-</script>
+  <script src="../bubblescript.js"
+    type='text/javascript'></script>
+  <script src="tushie.bubls"
+    type="text/bubblescript"></script>
+  </body>
+</html>
