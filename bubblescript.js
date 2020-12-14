@@ -1308,31 +1308,123 @@
   window.Glider = Glider;
 
 
-  window.addEventListener('load', function() {
-    frosty = document.querySelectorAll(
-      "script[type='text/bubblescript']")
-    frosty.forEach(function(mustard) {
-      try {
-        if (mustard.src) {
-          // console.log(ice.src);
-          var xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
 
-              // console.log(this.responseText);
-              bubbleSCRiPT(bnd, this.responseText);
-            }
-          }
-          xhttp.open("GET", mustard.src, true);
-          xhttp.send();
-        } else {
-          bubbleSCRiPT(bnd, mustard.innerText);
-        }
-      } catch (e) {
-        console.log(e)
+
+  (function(){
+
+                          function
+                        fetchScript
+                    ( url , callback )
+                          {
+              xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function()
+                     {
+                 if (this.readyState == 4)
+                {
+                   if (this.status == 200)
+            {
+                  callback({text: this.responseText});
+                                                }
+                            else
+            {
+             error(url + " returned " + this.status);
+                                                }
+                                          }
+                                    }
+                   xhttp.open('GET', url);
+                       xhttp.send();
+                             }
+
+                          function
+                        fetchScripts5
+                       (scripts, cbk)
+                           {
+  var open =  0, // how many downloads are currently "open"
+        counter = 0,
+            fetchQ = [],
+              wait = [],
+                 flash  =  1;
+
+  function getAtMe(order,callback) {
+    return function (response) {
+      if (fetchQ.length>0) {
+        let script,order,callback;
+        [script,order,callback] = fetchQ.shift();
+        fetchScript(script, getAtMe(order,callback));
+      } else {
+        open-- ;
       }
-    })
-  });
+
+      scriptReady(order,callback,response);
+    }
+  }
+
+  function scriptReady(order,callback,response) {
+    var cmp=getComplete(order);
+
+    if(order==flash){
+      if (callback(response.text,cmp))
+        cmp();
+    } else if (order>flash) {
+      wait[order]=[callback,response,cmp];
+    } else {
+      throw "that is some weird wild stuff";
+    }
+  }
+
+  function getComplete(order) {
+    return function() {
+      if (order!=flash)
+        return;
+      flash++;
+      setTimeout(clearWait, 0);
+    }
+  }
+
+  function clearWait () {
+    var cb,r,cmp;
+    if(wait[flash]) {
+      [cb,r,cmp]=wait[flash];
+      delete wait[flash];
+      if (cb(r.text,cmp)) cmp();
+    }
+  }
+
+  while(scripts) {
+    let script = scripts.head;
+    counter++;
+    if(!script.src) {
+      // scriptReady(counter,callback,{text: script.innerHTML});
+      setTimeout(scriptReady,0,counter,cbk, {text: script.innerHTML});
+      // async(scriptReady,counter,cbk, {text: script.innerHTML});
+    } else {
+      if (open<3) {
+        fetchScript(script.src, getAtMe(counter, cbk));
+        open++;
+      } else {
+        fetchQ.push([script,counter,cbk]);
+      }
+    }
+    scripts=scripts.rest;
+  }
+
+  return {};
+}
+
+    window.addEventListener('load', function() {
+      let frosty = document.querySelectorAll(
+        "script[type='text/bubblescript']")
+        // breakpoint;
+      let scripts = arry.toList(Array.from(frosty));
+      // let scripts = _nodeList.toList(frosty);
+
+      fetchScripts5(scripts, function(text) {
+        bubbleSCRiPT(bnd, text);
+        return true;
+      });
+    });
+
+  })();
 
 
 })();
