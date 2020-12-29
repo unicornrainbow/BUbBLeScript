@@ -17,10 +17,22 @@
   var emptyList,
     emptyGlider;
 
-  class List {
-    constructor(head, tail) {
+  class List  {
+    constructor(head, ...tail) {
       this.head = head;
-      this.tail = tail;
+      this.tail = tail[0];
+      if (tail.length > 1)
+        this.tail = List.from(tail);
+    }
+
+    static from(a) {
+      var list;
+      a = Array.from(a);
+      list = new List(a.pop());
+      while (a.length > 0) {
+        list = list.push(a.pop());
+      }
+      return list;
     }
 
     push(val) {
@@ -134,6 +146,11 @@
       if (this.tail)
         return this.tail.each(fn);
       return result;
+    }
+
+    *[window.Symbol.iterator]() {
+      yield this.head;
+      yield this.tail;
     }
 
   }
@@ -985,26 +1002,9 @@
     localStorage: localStorage,
     Array: Array,
 
-    // muf: function(args) {
-    //   // var a, b, bnd = this;
-    //   var cnd = bnd;
-    //   var a, b, bnd = this;
-    //   a = args.first;
-    //   b = args.rest.first;
-    //   // bnd[a.toString()] = evl(bnd, b);
-    //   cnd[a.toString()] = evl(bnd, b);
-    //   // bnd[a] = evl(this,b);
-    // },
-
-    muf: function(args) {
-      // var a, b, bnd = this;
-      var a, b, cnd = this;
-      // var cnd = bnd;
-      a = args.first;
-      b = args.rest.first;
-      // bnd[a.toString()] = evl(bnd, b);
-      return bnd[a.toString()] = evl(cnd, b);
-      // bnd[a] = evl(this,b);
+    muf: function([key,[val]]) {
+      return bnd[key.toString()]
+        = evl(this, val);
     },
 
 
