@@ -6,13 +6,17 @@
     font-size: 5.5pt;
     /* font-size: 12pt; */
     color: magenta;
-    color: rgb(255, 100, 255);
-    background-color: rgb(255, 200, 255);
+    /* color: rgb(255, 100, 255); */
+    /* background-color: rgb(255, 200, 255); */
     /* background: magenta; */
     /* color: pink; */
     /* text-align: justify; */
     /* text-align: right; */
     /* direction: rtl; */
+  }
+  ::selection {
+    /* color: snow; */
+    background: rgb(255, 211, 255);
   }
   @media print {
     body {
@@ -48,9 +52,26 @@
   class ol {
     padding-left: 2em;
   }
-  block {
+  block,
+  case {
     white-space: pre;
     font-family: monospace;
+  }
+  case {
+    display: block;
+    float: left;
+    /* max-height: 20em; */
+    /* overflow: hidden; */
+  }
+  captian > case,
+  ol.switch captian > li.case {
+    float: none;
+  }
+  ol.switch {
+    clear: both;
+  }
+  ol.switch li.case {
+    float: left;
   }
   pre {
     display: block;
@@ -73,6 +94,10 @@
     display: block;
     clear: both;
   }
+  comment {
+    color: lightpink;
+    /* color: snow; */
+  }
   @media print {
     page-break {
       display: block;
@@ -85,365 +110,7 @@
 <script src="bubblescript.js">
 </script>
 <script type="text/bubblescript">
-  </script>
-
-
-<div>
-<pre>
-            /**   BUbBLeScript
-                         Version 0.1.4.👸👱‍♀️   **/
-
-
-
-(function() {                   //                    } ()noitcnuf)
-
-  class BUbBLeScript {          //           } tpircSeLBbUB ssalc
-      parse {}                  //                {} esrap
-  }                             //                            {
-
-  var emptyList,
-    emptyGlider;
-  </pre>
-</div>
-<!-- <page-break></page-break> -->
-
-<div style=" float: left; clear:left; margin: .5em 5em .5em 1.4em;">
-<pre style="margin-bottom: 1.5em;">class                    {</pre>
-<captian  style="clear:both;">
-
-<method>conj(val) {
-  return val.reduce(function(memo, i) {
-    return memo.push(i);
-  }, this);
-}</method>
-
-<method>constructor(head, tail) {
-  this.head = head;
-  this.tail = tail;
-}</method>
-
-<method>count {
-  return this.reduce(function(memo, i) {
-    return memo + 1;
-  }, 0);
-}</method>
-
-<method>each(fn) {
-  var result = fn(this.head);
-  if (this.tail)
-    return this.tail.each(fn);
-  return result;
-}</method>
-
-
-
-<method>get first {
-  return this.head;
-}</method>
-
-
-<method>get rest {
-  return this.tail;
-}</method>
-
-<method>get next {
-  return this.tail.head;
-}</method>
-
-
-<method>get isEmpty { return false; }</method>
-
-<method>get last {
-  return this.tail ? this.tail.last : this.head;
-}</method>
-
-<method>inspect {
-  "(" + map(function(q) {
-    q.inspect()
-  }).join() + ")"
-}</method>
-
-
-</captian>
-<captian>
-
-<method>join(delimiter = ' ') {
-  if (this.tail) {
-    return this.head + delimiter + this.tail.join()
-  } else {
-    if (typeof this.head == "string") {
-      return '"' + this.head + '"';
-    }
-    return this.head.toString()
-  }
-}</method>
-<method>map(fn) {
-  var tail = null,
-    head;
-  if (this.tail)
-    tail = this.tail.map(fn);
-  head = fn(this.head);
-  return new List(head, tail);
-}</method>
-
-<method>peek {
-  return this.head;
-}</method>
-
-<method>pop {
-  return this.tail || emptyList;
-}</method>
-
-<method>push(val) {
-  return new List(val, this);
-}</method>
-
-<method>shift {
-  return this.reverse().pop().reverse();
-}</method>
-
-
-</captian>
-
-<captian>
-
-<method>reduce(fn, memo) {
-  var a, b, c = this;
-  if (memo == undefined) {
-    a = this.head;
-    c = this.tail;
-    if (!c) {
-      return a;
-    } else {
-      b = c.head;
-      c = c.tail;
-      memo = fn(a, b);
-      if (!c)
-        return memo;
-    }
-  }
-  return c.push(memo).reduce(fn);
-}</method>
-
-<method>reverse {
-  if (!this.tail) return this;
-  var list = new List(this.head);
-  return this.tail.reduce(function(memo, i) {
-    return memo.push(i);
-  }, list);
-}</method>
-
-<method>toArray {
-  if (this.tail) {
-    return [this.head].concat(this.tail.toArray());
-  } else {
-    return [this.head];
-  }
-}</method>
-
-<method>toString {
-  return "(" + this.join() + ")"
-}</method>
-
-
-
-</captian>
-
-<pre style="clear:both;">}</pre>
-</div>
-
-<!-- <page-break></page-break> -->
-
-<class style="float: left; margin: .5em 5em .5em 1.4em;">
-<pre style="margin-bottom: 1.5em;">class                     {</pre>
-<ol>
-<captian  style="clear:both;">
-
-<method><li>(head, tail) {
-  this.head = head;
-  this.tail = tail;
-}</li></method>
-
-<method><li>conj(...val) {
-  return val.reduce(function(i, memo) {
-    memo.push(i);
-  }, this);
-}</li></method>
-
-<method><li>each(fn) {
-  if (this.tail)
-    this.tail.each(fn);
-  fn(this.head);
-}</li></method>
-
-<method><li>get isEmpty { return false; }</li></method>
-
-<method><li>get first {
-   return @tail ?
-     @tail.first : @head
-}</li></method>
-
-<method><li>get second {
-  return @rest.first;
-}</li></method>
-
-<method>//get first {
-//  if @tail,
-//    @tail.first  @head
-//}</method>
-
-<method><li>get rest {
-  if (@_rest == null)
-    if (@tail)
-      @_rest =
-        new Glider(@head,
-          @tail.rest);
-
-  return @_rest;
-}</li></method>
-
-<method><li>inspect {
-  "[" + this.map(function(q) {
-    q.inspect()
-  }).join() + "]";
-}</li></method>
-
-</captian>
-<captian>
-<method><li>join(delimiter = ' ') {
-  if (this.rest)
-    return this.first + delimiter + this.rest.join();
-  else
-  if (typeof this.first == "string")
-    return '"' + this.first + '"';
-  else
-    return this.first + '';
-}</li></method>
-
-<method><li>map(fn, ...aux) {
-  var tail = null;
-
-  var result = new Glider(fn(this.first,
-    ...aux.map(function(q) {
-      return q ? q.first : q
-    })));
-
-  if (!this.rest)
-    return result;
-
-  function into(a, b) {
-    var c = new Glider(b.peek());
-    b = b.pop();
-
-    while (!b.isEmpty) {
-      c = c.push(b.peek());
-      b = b.pop();
-    }
-    while (!c.isEmpty) {
-      a = a.push(c.peek());
-      c = c.pop();
-    }
-
-    return a;
-  }
-
-  return into(result, this.rest.map(fn,
-    ...aux.map(function(q) {
-      return q.rest
-    })));
-}</li></method>
-</captian>
-
-<captian>
-
-<method><li>mapp(fn, ...aux) {
-  var tail = null;
-
-  var result = new Glider(fn(this.first,
-    ...aux.map(function(q) {
-      return q ? q.first : q
-    })));
-
-  return this.rest.map(function(...args) {
-    return new Glider(fn(...args), result);
-  }, ...aux.map(function(q) {
-    return q.rest
-  }));
-
-}</li></method>
-
-<method><li>peek {
-  return this.head;
-}</li></method>
-<method><li>pop {
-  return this.tail || emptyGlider;
-}</li></method>
-<method><li>push(val) {
-  return new Glider(val, this);
-}</li></method>
-
-<method><li>reduce(fn, memo) {
-  if (this.tail)
-    memo = this.tail.reduce(fn, memo);
-  return fn(this.head, memo);
-}</li></method>
-
-<method><li>toString {
-  return "[" + this.join() + "]"
-}</li></method>
-
-</captian>
-
-</ol>
-<pre style="clear:both;">}</pre>
-</class>
-<!-- <page-break></page-break> -->
-<class style="float: left; margin: .5em 5em .5em 1.4em;">
-<pre style="margin-bottom: 1.5em;">class EmptyList extends List {</pre>
-<ol>
-<captian  style="clear:both;">
-<method><li>get [is empty] { return true; }</li></method>
-<method><li>map { return this; }</li></method>
-<method><li>push(val) {
-  return new List(val);
-}</li></method>
-<method><li>reverse {
-  return this;
-}</li></method>
-<method><li>[to string] {
-  return "()";
-}</li></method>
-</captian>
-</ol>
-
-<pre style="clear:both;">}</pre>
-</class>
-
-
-<class style="float: left; margin: .5em 5em .5em 1.4em;">
-<pre style="margin-bottom: 1.5em;">class EmptyGlider extends Glider {</pre>
-<ol>
-<captian  style="clear:both;">
-<method><li>get [is empty] { return true }</li></method>
-
-<method><li>push (val) {
-  return new Glider(val);
-}</li></method>
-
-<method><li>[to string] {
-  return "[]";
-}</li></method>
-</captian>
-</ol>
-
-<pre style="clear:both;">}</pre>
-</class>
-<pre>  emptyGlider =  new EmptyGlider;
-  emptyList   =  new EmptyList;
-</pre>
-
-
-<page-break></page-break>
+</script>
 
 <function style="float: left; margin: .5em 5em .5em 1.4em; clear: both;">
 <pre style="margin-bottom: 0;">function bubbleParse(s, stack = []) {</pre>
@@ -469,77 +136,7 @@
 <group>
 <captian><pre>
   each(s.split(''), function(c) {
-    <a id="BREAKIN" href="#BREAKOUT">&Lt;breakout&Gt;</a>
-  }
-</pre></captian>
-</group>
-<group>
-<captian><block>  if (word) {
-    switch (true) {
-      case number.test(word):
-        word = parseInt(word);
-        break;
-      case keyword.test(word):
-        word = new Keyword(word.substr(1));
-        break;
-      case /^.+$/.test(word):
-        word = new Symbol(word);
-        break;
-    }
-
-    while (arry.peek(stack) == SingleQ) {
-      stack.pop();
-      count--;
-      word = new Quoted(word);
-    }
-
-    stack.push(word);
-    count++;
-    word = null;
-  }
-</block></captian>
-<captian><block>  if (depth == 0) {
-    let d = stack.length - progress;
-    if (d > 1) {
-      word = stack.pop();
-      d--;
-      count--;
-
-      list = new List(word);
-
-      for (; d > 0; d--) {
-        word = stack.pop()
-        if (word == SingleQ) {
-          let q = new Quoted(list.peek());
-          list = list.pop();
-          list = list.push(q);
-        } else {
-          list = list.push(word);
-        }
-      }
-
-      word = null;
-      stack.push(list);
-      list = null;
-    }
-    progress = stack.length; // cinch
-  }</block>
-<pre>
-
-  // return stack2;
-  // for(var w of stack) {
-  //   console.log(w.toString());
-  // }
-  return stack;</pre>
-</captian></group></group>
-<pre style="clear:both;">}</pre>
-</function>
-
-
-<div style="clear: both;">
-<label  style="display: block;"><a id="BREAKOUT" href="#BREAKIN">&Gt;BREAKIN&Lt;</a></label>
-
-<captian><pre>
+<div style="clear: both;"><captian><pre>
     if (stropen) {
       word += c;
       if (c == '"') {
@@ -552,16 +149,17 @@
       }
       return;
     }
+</pre></captian><captian><pre>
     if (comment) {
       if (c == "\n")
         comment = false;
       return;
     }
-
-    switch (c) {
 </pre></captian>
-<group>
-<captian><pre>
+
+<pre style="clear: both;">
+    switch (c) {</pre>
+<group style="font-size: 3pt; height: 2.8in; position: absolute; top: 2.6in; margin-left: .15in;"><captian><pre>
       case '(':
         stack.push(LParen);
         depth++;
@@ -638,7 +236,7 @@
           count--;
           list = new Quoted(list);
         }
-
+</pre></captian><captian><pre>
         depth--;
         count = counts.pop();
         word = null;
@@ -646,7 +244,7 @@
         count++;
         list = null;
         break;
-</pre></captian><captian><pre>
+
       case ']':
         if (typeof word == "string") {
           // if (word) {
@@ -692,6 +290,7 @@
           // skip spaces
           // if(arry.peek(stack) == Space)
           //   stack.pop()
+</pre></captian><captian><syntax-case>
           word = stack.pop();
           count--;
         }
@@ -714,7 +313,7 @@
         count++;
         glider = null;
         break;
-</pre></captian><captian><pre>
+
       case ' ':
       case "\n":
       case ',':
@@ -744,6 +343,7 @@
               word = new Symbol(word);
           }
 
+</syntax-case></captian><captian><pre>
           if (depth > 0)
 
             while (arry.peek(stack) == SingleQ) {
@@ -862,19 +462,76 @@
           word = c;
           // count += 1;
         }
-    </pre></captian></group>
-<pre style="clear:both;">    } /* ** END CASE ** */</pre>
+</pre></captian></group>
+
+
+<pre style="clear:both; margin-top: 3in;">    } <comment>/* ** END SWITCH ** */</comment></pre>
 <group><captian><pre>
     if (c && c != ' ' && c != ';')
       lc = c;
 </pre></captian></group>
-<pre style="clear:both;">  }); /* ** END EACH ** */</pre>
-<group>
-<captian><pre>
-  </pre>
-</captian>
-</group>
+<pre style="clear:both;">  }); <comment>/* ** END EACH ** */</comment></pre>
 </div>
-</div>
+</pre></captian></group>
+<group><captian><block>  if (word) {
+    switch (true) {
+      case number.test(word):
+        word = parseInt(word);
+        break;
+      case keyword.test(word):
+        word = new Keyword(word.substr(1));
+        break;
+      case /^.+$/.test(word):
+        word = new Symbol(word);
+        break;
+    }
 
-<pre style="clear:both;"> })(); </pre>
+    while (arry.peek(stack) == SingleQ) {
+      stack.pop();
+      count--;
+      word = new Quoted(word);
+    }
+
+    stack.push(word);
+    count++;
+    word = null;
+  }
+</block></captian>
+<captian><block> if (depth == 0) {
+    let d = stack.length - progress;
+    if (d > 1) {
+      word = stack.pop();
+      d--;
+      count--;
+
+      list = new List(word);
+
+      for (; d > 0; d--) {
+        word = stack.pop()
+        if (word == SingleQ) {
+          let q = new Quoted(list.peek());
+          list = list.pop();
+          list = list.push(q);
+        } else {
+          list = list.push(word);
+        }
+      }
+
+      word = null;
+      stack.push(list);
+      list = null;
+    }
+    progress = stack.length; // cinch
+  }</block>
+</captian></group>
+<br style="clear: both;">
+<pre>
+
+  // return stack2;
+  // for(var w of stack) {
+  //   console.log(w.toString());
+  // }
+  return stack;
+
+} <comment>// END bubbleParse \\ {</comment></pre>
+</function>

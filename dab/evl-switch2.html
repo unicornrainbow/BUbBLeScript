@@ -1,0 +1,436 @@
+
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  h3 {
+    display: inline-block;
+    /* line-height: 2em; */
+    font-family: 'Playfair Display', serif;
+  }
+  body {
+    font-size: 12pt;
+    /* font-size: 12pt; */
+    /* background: magenta; */
+    /* color: pink; */
+    /* text-align: justify; */
+    /* text-align: right; */
+    /* direction: rtl; */
+
+    color: magenta;
+    color: rgb(255, 100, 255);
+    background-color: rgb(255, 200, 255);
+  }
+  @media print {
+    body {
+      /* color: black; */
+    }
+  }
+  code {
+    font-size: 9pt;
+    color: magenta;
+    /* unicode-bidi: bidi-override; */
+  }
+  method, mthd {
+    display: block;
+    /* border: 1px solid magenta; */
+    /* border-left: 1px dotted cyan; */
+    /* padding: 0; */
+    /* float: left; */
+    white-space: pre;
+    /* font-family: pixel, moonspace, monospace; */
+    margin: .5em .5em .5em 1.8em;
+    margin: .5em;
+    margin: 0 1em 1em;
+    /* padding-left: .2em; */
+
+    /* float: right; */
+    /* margin: .5em 1.8em .5em .5em; */
+    /* unicode-bidi: bidi-override; */
+  }
+  class, function, block {
+    display: block;
+    /* white-space: pre; */
+  }
+  class ol {
+    padding-left: 2em;
+  }
+  block,
+  case {
+    white-space: pre;
+    font-family: monospace;
+  }
+
+  case {
+    display: block;
+    float: left;
+    /* max-height: 20em; */
+    /* overflow: hidden; */
+  }
+  captian > case,
+  ol.switch captian > li.case {
+    float: none;
+  }
+  ol.switch {
+    clear: both;
+  }
+  ol.switch li.case {
+    float: left;
+  }
+  pre {
+    display: block;
+    float: left;
+
+    /* float: right;
+    unicode-bidi: bidi-override; */
+  }
+  clear {
+    clear: both;
+  }
+  captian {
+    /* width: 1.3in; */
+    display: block;
+    float: left;
+
+    /* float: right; */
+  }
+  group {
+    display: block;
+    clear: both;
+  }
+  @media print {
+    page-break {
+      display: block;
+      page-break-after: always;
+    }
+  }
+  /* color[yellow] {
+    color: yellow;
+  }
+  color[purple] {
+    color: purple;
+  }
+  color[red] {
+    color: red;
+  }
+  color[blue] {
+    color: blue;
+  }
+  color[aqua] {
+    color: aqua;
+  }
+  color[teal] {
+    color: teal;
+  }
+  color[gold] {
+    color: gold;
+  }
+  color[honeydew] {
+    color: honeydew;
+  } */
+  </style>
+<div style="clear: both;">
+<group><captian><pre>
+      <color green><h3>case '(':</h3>
+        stack.push(LParen);
+        depth++;
+        counts.push(count);
+        count = 0;
+        break;</color>
+      <color yellow><h3>case '[':</h3>
+        stack.push(LBrack);
+        depth++;
+        counts.push(count);
+        count = 0;
+        break;</color>
+      <color purple><h3>case "'":</h3>
+        stack.push(SingleQ);
+        count++;
+        break;</color>
+      <color red><h3>case '"':</h3>
+        stropen = true;
+        word = c;
+        // count++;
+        // stack.push(DoubleQ);
+        break;</color>
+
+      <color blue><h3>case ')':</h3>
+        if (typeof word == "string") {
+          switch (true) {
+            case number.test(word):
+              word = parseInt(word);
+              break;
+            case /^(\d+)?\.\d+$/.test(word):
+              word = parseFloat(word);
+              break;
+            case keyword.test(word):
+              word = new Keyword(word.substr(1));
+              break;
+            case /^\"(.*)\"$/.test(word):
+              // strip quotes
+              word = /^\"(.*)\"$/.exec(word)[1];
+              break;
+            case /^.+$/.test(word):
+              word = new Symbol(word);
+          }
+        }
+
+        if (word == null) word = stack.pop();
+        if (word == LParen) {
+          // stack.push(new List)
+          stack.push(emptyList);
+          word = null;
+          break;
+        }
+
+        while (arry.peek(stack) == SingleQ) {
+          stack.pop()
+          count--;
+          word = new Quoted(word);
+        }
+
+        list = new List(word);
+
+        word = stack.pop();
+        count--;
+        while (word !== LParen) {
+          list = list.push(word);
+          // skip spaces
+          // if(arry.peek(stack) == Space)
+          //   stack.pop()
+          word = stack.pop();
+          count--;
+        }
+
+        while (arry.peek(stack) == SingleQ) {
+          stack.pop();
+          count--;
+          list = new Quoted(list);
+        }
+
+        depth--;
+        count = counts.pop();
+        word = null;
+        stack.push(list);
+        count++;
+        list = null;
+        break;</color>
+
+      <color aqua><h3>case ']':</h3>
+        if (typeof word == "string") {
+          // if (word) {
+          switch (true) {
+            case number.test(word):
+              word = parseInt(word);
+              break;
+            case /^(\d+)?\.\d+$/.test(word):
+              word = parseFloat(word);</color>
+</pre></captian><captian><pre>
+              <color aqua>break;
+            case keyword.test(word):
+              word = new Keyword(word.substr(1));
+              break;
+            case /^\"(.*)\"$/.test(word): //string
+              word = /^\"(.*)\"$/.exec(word)[1];
+              break;
+            case /^.+$/.test(word):
+              word = new Symbol(word);
+          }
+        }
+
+        if (word == null) {
+          word = stack.pop();
+          count--;
+        }
+        if (word == LBrack) {
+          // stack.push(new Glider);
+          stack.push(emptyGlider);
+          depth--;
+          word = null;
+          break;
+        }
+
+        while (arry.peek(stack) == SingleQ) {
+          stack.pop()
+          count--;
+          word = new Quoted.new(word)
+        }
+
+        tmp = [];
+        while (word !== LBrack) {
+          tmp.push(word);
+          // skip spaces
+          // if(arry.peek(stack) == Space)
+          //   stack.pop()
+          word = stack.pop();
+          count--;
+        }
+        word = null;
+
+        glider = new Glider(tmp.pop());
+        while (tmp.length > 0) {
+          glider = glider.push(tmp.pop());
+        }
+
+        while (arry.peek(stack) == SingleQ) {
+          stack.pop();
+          count--;
+          glider = new Quoted(glider);
+        }
+
+        depth--;
+        count = counts.pop();
+        stack.push(glider);
+        count++;
+        glider = null;
+        break;</color>
+
+      <color teal><h3>case ' ':
+case "\n":
+case ',':</h3>
+        // if (word) { // clear word
+        if (typeof word == "string") {
+          switch (true) {
+            case number.test(word):
+              word = parseInt(word);
+              break;
+            case /^(\d+)?\.\d+$/.test(word):
+              word = parseFloat(word);
+              break;
+            case keyword.test(word):
+              word = new Keyword(word.substr(1));
+              break;
+            case /^\"(.*)\"$/.test(word):
+              // strip quotes
+              word = /^\"(.*)\"$/.exec(word)[1];
+              break;
+            case word == 'true':
+              word = true;
+              break;
+            case word == 'false':
+              word = false;
+              break;
+            case /^.+$/.test(word):
+              word = new Symbol(word);
+          }
+
+          if (depth > 0)
+
+            while (arry.peek(stack) == SingleQ) {
+              stack.pop()
+              count--;
+              word = new Quoted(word)
+            }
+
+          if (word) {
+            stack.push(word);
+            count++;
+            word = null;
+          }
+          // stack.push(Space);
+        }</color>
+
+</pre></captian><captian><case>
+        <color teal>if (c == "\n" && lc != ',') {
+          // if (depth == 0 && count > 1) {
+          if (depth == 0) {
+            let d = stack.length - progress;
+            if (d > 1) {
+              // implied list
+              word = stack.pop();
+              d--;
+              count--;
+
+              // while (arry.peek(stack) == SingleQ) {
+              //  stack.pop()
+              //  word = new Quoted(word);
+              //  count--;
+              // }
+
+              list = new List(word);
+
+              // while(count > 0) {
+              //   word = stack.pop();
+              //   count--;
+              //   list = list.push(word);
+              // }
+              for (; d > 0; d--) {
+                word = stack.pop()
+                //   // list.push(stack.pop());
+                if (word == SingleQ) {
+                  let q = new Quoted(list.peek());
+                  list = list.pop();
+                  list = list.push(q);
+                } else {
+                  list = list.push(word);
+                }
+              }
+
+              word = null;
+              stack.push(list);
+              list = null;
+            }
+            progress = stack.length; // cinch
+          }
+          // count = 0;
+          // xstack.push(stack.pop())
+          // while (stack.length!=0){
+          // stack2.push(stack.shift())
+          // }
+        }
+
+        // if (c==',')
+        // comma = true;
+
+        break;
+        //case ".":
+        if (word) {
+          switch (true) {
+            case /^\d+\.$/.test(word):
+            case /^:.+$/.test(word):
+              word += c;
+              return;
+            case /^.+$/.test(word):
+              stack.push(new Symbol(word));
+              word = null;
+              stack.push(Dot);
+              count += 2;
+              return;
+          }
+        } else {
+          word = c;
+        }
+        break;
+        //case '/':
+        if (word) {
+          if (arry.peek(stack) != Slash) {
+            stack.push(new Symbol(word));
+            word = null;
+            stack.push(Slash);
+            count += 2;
+          } else {
+            word += c;
+          }
+        } else {
+          word = c;
+        }
+        break;
+        // case '\':<color>
+
+
+</case></captian><captian><case>
+      <color gold><h3>case '%':</h3>
+        comment = true;
+        break;</color>
+      <h3>case '/':</h3>
+        if (lc == '/') {
+          comment = true;
+        }
+        break;
+      <color honeydew><h3>default:</h3>
+        if (word) {
+          word += c;
+        } else {
+          word = c;
+          // count += 1;
+        }</color>
+</case></captian></group>

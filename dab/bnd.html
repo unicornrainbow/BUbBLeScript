@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>evl</title>
+    <style>
+      body {
+        color: magenta;
+      }
+      h1, h2, h3 {
+        display: inline;
+      }
+      @media print {
+        page-break {
+          display: block;
+          page-break-after: always;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+
+<pre>
+
+  var bnd = {
+    window: window,
+    document: document,
+    console: console,
+    localStorage: localStorage,
+    Array: Array,
+
+    // muf: function(args) {
+    //   // var a, b, bnd = this;
+    //   var cnd = bnd;
+    //   var a, b, bnd = this;
+    //   a = args.first;
+    //   b = args.rest.first;
+    //   // bnd[a.toString()] = evl(bnd, b);
+    //   cnd[a.toString()] = evl(bnd, b);
+    //   // bnd[a] = evl(this,b);
+    // },
+
+    muf: function(args) {
+      // var a, b, bnd = this;
+      var a, b, cnd = this;
+      // var cnd = bnd;
+      a = args.first;
+      b = args.rest.first;
+      // bnd[a.toString()] = evl(bnd, b);
+      return bnd[a.toString()] = evl(cnd, b);
+      // bnd[a] = evl(this,b);
+    },
+
+
+    send: function(args) {
+      var target, msg, bnd = this;
+      target = evl(bnd, args.first);
+      msg = args.rest.map(function(a) {
+        return evl(bnd, a)
+      });
+
+      // if(a==undefined)
+      //   throw(a + " didn't respond to " + b.first);
+
+      if (msg.rest) {
+        return target[msg.first](...msg.rest.toArray());
+      } else {
+        return target[msg.first]();
+      }
+    },
+
+    get: function(args) {
+      var bnd = this
+      return args.map(function(a) {
+          return evl(bnd, a);
+        })
+        .reduce(function(a, b) {
+          if (a) {
+            return a[b];
+          } else {
+            return b;
+          }
+        });
+    },
+    <page-break></page-break>
+    export: function(crunch) {
+      var ca, nd, y, bnd;
+      bnd = this;
+      [ca, nd, y] = crunch
+        .map(function(q) {
+          return evl(bnd, q);
+        }).toArray();
+      return ca[nd] = y;
+    },
+
+    fn: function(args) {
+      var bnd = this;
+      return new Fn(bnd, args.first, args.rest);
+    },
+
+    macro: function(args) {
+      var bnd = this;
+      return new Macro(bnd, args.first, args.rest)
+    },
+
+    jsfn: function(args) {
+      var x, bnd = this
+      x = args.push(new Symbol('fn'));
+      var fn = evl(bnd, x);
+      return function(...args) {
+        return fn.call(bnd, arry.toList(args));
+      }
+    },
+
+    let: function(hamburgers) {
+      var icecream = hamburgers.first,
+        pineapple = Object.create(this),
+        splash, sunshine,
+        elves = evl;
+
+      while (icecream) {
+        splash = icecream.first;
+        sunshine = icecream.rest;
+        pineapple[splash] = elves(pineapple, sunshine.first);
+        icecream = sunshine.rest;
+      }
+
+      return hamburgers.rest.each(function(xoxo) {
+        return elves(pineapple, xoxo);
+      })
+    },
+
+    not: function(y) {
+      return !y
+    },
+    and: function(a, b) {
+      return a && b;
+    },
+    or: function(a, b) {
+      return a || b;
+    },
+    '>': function(a, b) {
+      return a > b;
+    },
+    '<': function(a, b) {
+      return a < b;
+    },
+
+    <page-break></page-break>
+    if: function(rainbows) {
+      var turbulance = rainbows.peek(),
+        kango = rainbows.pop(),
+        bnd = this,
+        elves = evl;
+
+      if (elves(bnd, turbulance)) {
+        return elves(bnd, kango.peek());
+      } else {
+        let bambo = kango.pop();
+        if (bambo.isEmpty)
+          return false;
+        else
+          return elves(bnd, bambo.peek());
+      }
+    },
+
+    print: function(vals) {
+      var bnd = this;
+      // q =
+      vals.
+      map(function(a) {
+        return evl(bnd, a)
+      }).
+      each(function(value) {
+        // var d = document.createElement('div');
+        // value = value.replace(/\\n/g, "<BR>")
+        // d.innerHTML = value;
+
+        document.body.append(value);
+      });
+
+      // vals.each(document.write)
+      // function(val) {
+      //   document.write(val);
+      // });
+    },
+
+    list: function(args) {
+      var bnd = this;
+      return args.reverse().map(function(arg) {
+        return evl(bnd, arg);
+      }).reverse();
+    },
+
+    "+": function(aahs) {
+      var bnd = this;
+      return aahs.map(function(ah) {
+        return evl(bnd, ah);
+      }).reduce(function(a, b) {
+        return a + b;
+      });
+    },
+    "-": function(aahs) {
+      var bnd = this;
+      return aahs.map(function(ah) {
+        return evl(bnd, ah);
+      }).reduce(function(a, b) {
+        return a - b;
+      });
+    },
+    <page-break></page-break>
+    "*": function(aahs) {
+      var bnd = this;
+      return aahs.map(function(ah) {
+        return evl(bnd, ah);
+      }).reduce(function(a, b) {
+        return a * b;
+      });
+    },
+    "/": function(aahs) {
+      var bnd = this;
+      return aahs.map(function(ah) {
+        return evl(bnd, ah);
+      }).reduce(function(a, b) {
+        return a / b;
+      });
+    },
+    "=": function(oohs) {
+      var bnd = this;
+      var a = evl(bnd, oohs.first);
+      var b = evl(bnd, oohs.rest.first)
+      return a == b;
+    },
+    not: function(y) {
+      return !y
+    },
+    and: function(xxx) {
+      return evl(this, xxx.first) && evl(this, xxx.last);
+    },
+    or: function(a, b) {
+      return a || b;
+    },
+    '>': function(xxx) {
+      return evl(this, xxx.first) > evl(this, xxx.last);
+    },
+    '<': function(xxx) {
+      return evl(this, xxx.first) < evl(this, xxx.last);
+    },
+    blert: function(vals) {
+      var bnd = this;
+      alert(vals.map(function(a) {
+        return evl(bnd, a)
+      }).join());
+      // each(function(value){
+      // document.body.append(value)});
+    },
+    parse: function(args) {
+      return bubbleParse(evl(this, args.first));
+    },
+    evl: function(eeks) {
+      var bnd = this;
+      var result;
+      // return evl(this, evl(this, eeks.first)[0]);
+      result = evl(bnd, evl(bnd, eeks.first)[0]);
+      console.log(bnd)
+      return result;
+
+      // return eeks.map(function(eek) {
+      //   return evl(bnd, eek);
+      //   // return evl(bnd, evl(bnd, eek));
+      // })
+      // return evl(this, args.first);
+    },
+
+    <page-break></page-break>
+    concat: function(eeks) {
+      return eeks.map(function(eek) {
+        return evl(bnd, eek);
+      }).join('');
+    },
+    expandmacro: function(args) {
+      var bnd = this,
+        l = args.first,
+        m = l.first;
+
+      m = evl(bnd, m);
+      return m.expand(bnd, l.rest);
+    },
+    "new": function(xyz) {
+      var bnd = this,
+        m = xyz.first,
+        n = xyz.rest;
+
+        m = evl(bnd, m);
+        n = n.map(function(q) { return evl(bnd, q); });
+
+        return new m(...n.toArray());
+    }
+  }
+  <page-break></page-break>
+  <h3>function invoke(bnd, fn, args) {</h3>
+    var bnd = Object.create(bnd);
+    var q = map(glider, fn.args, args)
+
+    var x, y;
+    x = fn.args;
+    y = args;
+    while (x) {
+      if (x.first == '&') {
+        x = x.rest;
+        bnd[x.first] = y
+        x = null;
+        y = null;
+        break;
+      }
+      bnd[x.first] = y && y.first;
+      x = x.rest;
+      y = y && y.rest;
+    }
+
+    return evl(bnd, fn);
+  }
+
+  <h3>function map(fn, list, ...lists) {</h3>
+    return list.map(fn, ...lists);
+  }
+
+  <h3>function push(a, b) {</h3>
+    return a.push(b);
+  }
+
+  <h3>function list(...args) {</h3>
+    return arry.toList(args);
+  }
+
+  <h3>function glider(...args) {</h3>
+    return arry.toGlider(args);
+  }
+
+  <h3>function quote(m) {</h3>
+    return new Quoted(m);
+  }
+
+  <h3>function bubbleSCRiPT(bnd, s = null) {</h3>
+    return bubbleParse(s.trim()).map(function(exp) {
+      return evl(bnd, exp);
+    }).pop();
+  }
+
+</pre>
+
+  </body>
+</html>

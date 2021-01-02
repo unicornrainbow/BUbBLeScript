@@ -86,12 +86,11 @@
 
   muff 😋 (fn [pow]
     (cursor.remove)
-    (let [v (read)
-          q (parse v)
-          r (evl q)]
-      (println v)
-      (print-comment (+ "//> " r))
-      (muf history (push history v))
+    (let [c (read)]
+      (println c)
+      (let [r (evl (parse c))]
+        (print-comment (+ "//> " r)))
+      (muf history (push history c))
       (muf chistory history))
     (scroll)
     (clear ""))

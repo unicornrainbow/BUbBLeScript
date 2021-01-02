@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>evl</title>
+    <style>
+      body {
+        color: magenta;
+      }
+      h1, h2, h3 {
+        display: inline;
+      }
+    </style>
+  </head>
+  <body>
+
+
+<pre>
+
+  <h3>function invoke(bnd, fn, args) {</h3>
+    var bnd = Object.create(bnd);
+    var q = map(glider, fn.args, args)
+
+    var x, y;
+    x = fn.args;
+    y = args;
+    while (x) {
+      if (x.first == '&') {
+        x = x.rest;
+        bnd[x.first] = y
+        x = null;
+        y = null;
+        break;
+      }
+      bnd[x.first] = y && y.first;
+      x = x.rest;
+      y = y && y.rest;
+    }
+
+    return evl(bnd, fn);
+  }
+
+  <h3>function map(fn, list, ...lists) {</h3>
+    return list.map(fn, ...lists);
+  }
+
+  <h3>function push(a, b) {</h3>
+    return a.push(b);
+  }
+
+  <h3>function list(...args) {</h3>
+    return arry.toList(args);
+  }
+
+  <h3>function glider(...args) {</h3>
+    return arry.toGlider(args);
+  }
+
+  <h3>function quote(m) {</h3>
+    return new Quoted(m);
+  }
+
+  <h3>function bubbleSCRiPT(bnd, s = null) {</h3>
+    return bubbleParse(s.trim()).map(function(exp) {
+      return evl(bnd, exp);
+    }).pop();
+  }
+
+</pre>
+
+  </body>
+</html>

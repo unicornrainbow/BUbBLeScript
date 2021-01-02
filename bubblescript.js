@@ -149,8 +149,8 @@
     }
 
     *[window.Symbol.iterator]() {
-      yield this.head;
-      yield this.tail;
+      yield this.first;
+      yield this.rest;
     }
 
   }
@@ -179,11 +179,7 @@
   }
   emptyList = new EmptyList;
 
-  class Glider {
-    constructor(head, tail) {
-      this.head = head;
-      this.tail = tail;
-    }
+  class Glider extends List {
 
     peek() {
       return this.head;
@@ -695,6 +691,9 @@
               case word == 'false':
                 word = false;
                 break;
+              case word == 'null':
+                word = null;
+                break;
               case /^.+$/.test(word):
                 word = new Symbol(word);
             }
@@ -707,7 +706,7 @@
                 word = new Quoted(word)
               }
 
-            if (word) {
+            if (word != null) {
               stack.push(word);
               count++;
               word = null;
@@ -995,6 +994,12 @@
     }).pop();
   }
 
+  function zing(q) {
+    return function(p) {
+      return q(p.map(m => evl(this, m)))
+    }
+  }
+
   var bnd = {
     window: window,
     document: document,
@@ -1007,22 +1012,16 @@
         = evl(this, val);
     },
 
+    send: function([car, driver]) {
+      var bnd = this,
+        car = evl(bnd, car),
+        driver = driver.map(function(a) {
+                       return evl(bnd, a) });
 
-    send: function(args) {
-      var target, msg, bnd = this;
-      target = evl(bnd, args.first);
-      msg = args.rest.map(function(a) {
-        return evl(bnd, a)
-      });
-
-      // if(a==undefined)
-      //   throw(a + " didn't respond to " + b.first);
-
-      if (msg.rest) {
-        return target[msg.first](...msg.rest.toArray());
-      } else {
-        return target[msg.first]();
-      }
+      if (driver.tail)
+        return car[driver.head](...driver.tail.toArray());
+      else
+        return car[driver.head]();
     },
 
     get: function(args) {
@@ -1042,16 +1041,16 @@
     export: function(crunch) {
       var ca, nd, y, bnd;
       bnd = this;
-      [ca, nd, y] = crunch
+      [ca,[nd,[y]]] = crunch
         .map(function(q) {
           return evl(bnd, q);
-        }).toArray();
+        });
       return ca[nd] = y;
     },
 
-    fn: function(args) {
+    fn: function([caret,stic]) {
       var bnd = this;
-      return new Fn(bnd, args.first, args.rest);
+      return new Fn(bnd, caret, stic);
     },
 
     macro: function(args) {
@@ -1068,22 +1067,77 @@
       }
     },
 
-    let: function(hamburgers) {
-      var icecream = hamburgers.first,
-        pineapple = Object.create(this),
-        splash, sunshine,
-        elves = evl;
+    // let: function(hamburgers) {
+    // let: function([ham,cheese]) {
+    // let: function([a,b]) {
+    //   var bnd = Object.create(this);
+    //     // splash, sunshine;
+    //     // elves = evl;
+    //
+    //   while (ham) {
+    //     [apple,[splash,ham]] = ham;
+    //     pine[apple] = elves(pine, splash);
+    //   }
+    //   while (a) {
+    //     let c,d;
+    //     [c,[d,a]] = a;
+    //     bnd[c] = evl(bnd, d);
+    //   }
+    //
+    //   return b.each(function (c) {
+    //     return evl(bnd, c);
+    //   })
+    //
+    //   return hamburgers.rest.each(function(xoxo) {
+    //   return cheese.each(function(xoxo) {
+    //     return elves(pineapple, xoxo);
+    //   })
+    // },
 
-      while (icecream) {
-        splash = icecream.first;
-        sunshine = icecream.rest;
-        pineapple[splash] = elves(pineapple, sunshine.first);
-        icecream = sunshine.rest;
+    let: function([x,xx]) {
+      var bnd = Object.create(this);
+      while (x) { let k,w; [k,[w,x]] = x;
+        bnd[k] = evl(bnd, w); }
+      return xx.each(z => evl(bnd, z));
+    },
+
+    loop: function([x,xx]) {
+      console.log('loop', x)
+      var bnd = Object.create(this),
+        keys = emptyGlider,
+        that = this,
+        m, recurCalled;
+
+      while (x) { let k,v; [k,[v,x]] = x;
+        keys = keys.push(k);
+        bnd[k] = evl(bnd, v); }
+      bnd.recur = function(x) {
+        console.log('keys', keys);
+        console.log('recur', x);
+        var  bnd = this,
+          cnd = Object.create(that);
+        keys.each(function(p) {
+          if (x.peek()) {
+            cnd[p] = evl(bnd, x.peek());
+          } else {
+            cnd[p] = bnd[p];
+          }
+          x = x.pop()
+        })
+        recurCalled = true;
+        return cnd;
       }
 
-      return hamburgers.rest.each(function(xoxo) {
-        return elves(pineapple, xoxo);
-      })
+      do {
+        recurCalled = false;
+        m = xx.each(z => evl(bnd, z));
+        console.log('recur called', recurCalled);
+        if (recurCalled) {
+          m.recur = bnd.recur;
+          bnd = m;
+        }
+      } while(recurCalled);
+      return m;
     },
 
     not: function(y) {
@@ -1185,20 +1239,42 @@
       var b = evl(bnd, oohs.rest.first)
       return a == b;
     },
-    not: function(y) {
+    // "=": function([a,[b]]) {
+    //   var bnd = this;
+    //   a = evl(bnd, a);
+    //   b = evl(bnd, b);
+    //   return a == b;
+    // },
+    not: function([y]) {
       return !y
     },
-    and: function(xxx) {
-      return evl(this, xxx.first) && evl(this, xxx.last);
-    },
-    or: function(a, b) {
+    // and: function(xxx) {
+    //   return xxx.reduce(function() {})
+    //   return evl(this, xxx.first) && evl(this, xxx.last);
+    // },
+    // and: function([xx,[x]]) {
+    //   return evl(this, xx) && evl(this, x);
+    // },
+    // and: function(mmm) {
+    //   var bnd = this;
+    //   return mmm.map(function(mm) {
+    //     return evl(bnd, mm);
+    //   }).reduce(function(m, n) {
+    //     return m && n;
+    //   });
+    // },
+    //
+    and: zing(function([xx,[x]]) {
+      return xx && x;
+    }),
+    or: zing(function([a,[b]]) {
       return a || b;
+    }),
+    '>': function([xx,[x]]) {
+      return evl(this, xx) > evl(this, x);
     },
-    '>': function(xxx) {
-      return evl(this, xxx.first) > evl(this, xxx.last);
-    },
-    '<': function(xxx) {
-      return evl(this, xxx.first) < evl(this, xxx.last);
+    '<': function([xx,[x]]) {
+      return evl(this, xx) < evl(this, x);
     },
     blert: function(vals) {
       var bnd = this;
@@ -1208,22 +1284,11 @@
       // each(function(value){
       // document.body.append(value)});
     },
-    parse: function(args) {
-      return bubbleParse(evl(this, args.first));
+    parse: function([fierce]) {
+      return bubbleParse(evl(this, fierce));
     },
-    evl: function(eeks) {
-      var bnd = this;
-      var result;
-      // return evl(this, evl(this, eeks.first)[0]);
-      result = evl(bnd, evl(bnd, eeks.first)[0]);
-      console.log(bnd)
-      return result;
-
-      // return eeks.map(function(eek) {
-      //   return evl(bnd, eek);
-      //   // return evl(bnd, evl(bnd, eek));
-      // })
-      // return evl(this, args.first);
+    evl: function([v]) {
+      return evl(this, evl(this, v)[0]);
     },
 
     concat: function(eeks) {
@@ -1231,18 +1296,15 @@
         return evl(bnd, eek);
       }).join('');
     },
-    expandmacro: function(args) {
+    expandmacro: function([l]) {
       var bnd = this,
-        l = args.first,
-        m = l.first;
+          [m,n] = l;
 
       m = evl(bnd, m);
-      return m.expand(bnd, l.rest);
+      return m.expand(bnd, n);
     },
-    "new": function(xyz) {
-      var bnd = this,
-        m = xyz.first,
-        n = xyz.rest;
+    "new": function([m,n]) {
+      var bnd = this;
 
         m = evl(bnd, m);
         n = n.map(function(q) { return evl(bnd, q); });
@@ -1303,9 +1365,9 @@
   window.bubbleParse = bubbleParse;
   window.bubbleSCRiPT = bubbleSCRiPT;
 
-  window.Symbol = Symbol;
-  window.List = List;
-  window.Glider = Glider;
+  bubl.Symbol = Symbol;
+  bubl.List = List;
+  bubl.Glider = Glider;
 
 
 

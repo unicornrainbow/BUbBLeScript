@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>evl</title>
+    <style>
+      body {
+        color: magenta;
+      }
+      h1, h2, h3 {
+        display: inline;
+      }
+    </style>
+  </head>
+  <body>
+
+
+<pre>
+  <h1>function evl(bnd, exp) {</h1>
+    <h2>switch (exp.constructor) {</h2>
+      <h3>case Symbol:</h3>
+        return exp.resolve(bnd)
+      <h3>case List: {</h3>
+        let s = exp.peek()
+        if (s instanceof Symbol) {
+          if (s.callPattern == 1) {
+            //  x or x/x or x.x/x
+            let q = evl(bnd, s);
+            if (q != s)
+              return evl(bnd, exp.pop().push(q));
+            else
+              return exp;
+          } else /* send */ {
+            // call pattern 2
+            // x.x or x.x.x or x.x...
+            let q = s.resolveRoot(bnd)
+            if (!exp.rest) {
+              return q[s.fn]()
+            }
+            try {
+              return q[s.fn](...exp.rest.map(
+                function(a) {
+                  return evl(bnd, a)
+                }).toArray())
+            } catch (e) {
+              console.log(s.fn);
+              throw e;
+            }
+          }
+        } else if (s instanceof List) {
+          return evl(bnd, exp.pop().push(evl(bnd, s)))
+        } else if (s instanceof Fn) {
+          return s.call(bnd, exp.pop());
+        } else if (s instanceof Function) {
+          return s.call(bnd, exp.pop());
+        } else if (s instanceof Macro) {
+          return s.call(bnd, exp.pop());
+        } else {
+          return undefined;
+        }
+      }
+      <h3>case Glider:</h3>
+        return exp.map(function(a) {
+          return evl(bnd, a)
+        });
+      <h3>case Fn:</h3>
+      <h3>case Macro:</h3>
+        return exp.body.each(function(exp) {
+          return evl(bnd, exp);
+        });
+      <h3>case Quoted:</h3>
+        return exp.unquote();
+      <h3>default:</h3>
+        return exp;
+    }
+  };
+</pre>
+
+<!-- file:///C:/Users/Bambi/Projects/bubblescript/dab/evl.html -->
+<!-- <script>document.write(new Date);</script> -->
+
+  </body>
+</html>
