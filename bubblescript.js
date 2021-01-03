@@ -1124,6 +1124,40 @@
       return m;
     },
 
+    loop: function([x,xx]) {
+      var bnd = Object.create(this),
+        cnd = bnd,
+        keys = emptyGlider,
+        m, recurCalled;
+
+      while (x) { let k,v; [k,[v,x]] = x;
+        keys = keys.push(k);
+        bnd[k] = evl(bnd, v); }
+
+      bnd.recur = function(x) {
+        var  that = this,
+          _bnd = Object.create(bnd);
+        keys.each(function(p) {
+          if (x.peek()) {
+            _bnd[p] = evl(that, x.peek());
+          }
+          x = x.pop()
+        })
+        recurCalled = true;
+        return _bnd;
+      }
+
+      do {
+        recurCalled = false;
+        m = xx.each(z => evl(cnd, z));
+        console.log('recur called', recurCalled);
+        if (recurCalled) {
+          cnd = m;
+        }
+      } while(recurCalled);
+      return m;
+    },
+
     if: function(rainbows) {
       var turbulance = rainbows.peek(),
         kango = rainbows.pop(),
