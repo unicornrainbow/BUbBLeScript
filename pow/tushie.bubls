@@ -171,34 +171,32 @@
   (export document.body 'dir localStorage.dir)
   (export document.body.style 'background-color localStorage.bg)
 
+  (mufn reverse [a]
+    (loop [a a b (list)]
+      (if (not a.isEmpty)
+        (recur (pop a)
+             (push b (peek a)))
+         b)))
 
-   (mufn reverse [a]
-     (loop [a a b (list)]
-       (if (not a.isEmpty)
-         (recur (pop a)
-              (push b (peek a)))
-          b)))
-
-  //muf t 6
-  //mufn map [f & a],
-  //  println (pop a)
   mufn map [f & a],
-     //(loop [q (push '() (f (peek a)))
      (loop [q (list)
-            //a (send a 'reverse)]
             a (reverse a)]
        (if (not a.isEmpty)
          (recur (push q (f (peek a)))
             (pop a))
          q))
 
-  //mufn lalala [],
-   // (pop [])
+  //mufn 🙈 [a b c],
+
+  mufn reduce [fn list memo],
+     (loop [list list
+            memo memo]
+       (if (not list.isEmpty)
+         (recur (pop list) (fn (peek list) memo))
+         memo))
 
   mufn wrap-list [],
     (clear (+ "(" (+ (read) ")")))
-    //(clear (reduce + "(" (read) ")"))
-    //(clear (sum "(" (read) ")"))
 
   // ns cru
   // ns string
