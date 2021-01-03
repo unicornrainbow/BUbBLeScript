@@ -1016,16 +1016,17 @@
         driver = driver.map(function(a) {
                        return evl(bnd, a) });
 
-      if (driver.tail)
+      if (driver.tail) {
         return car[driver.head](...driver.tail.toArray());
-      else
+      } else
         return car[driver.head]();
     },
 
     send: zing(function([car, driver]) {
-      if (driver.tail)
+      if (driver.tail) {
+        // console.log(driver.head)
         return car[driver.head](...driver.tail.toArray());
-      else
+      } else
         return car[driver.head]();
     }),
 
