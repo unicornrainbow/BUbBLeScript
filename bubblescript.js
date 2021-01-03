@@ -354,7 +354,7 @@
       var r = this.resolveRoot(bnd)
       if (r) r = r[this.fn];
       // return r;
-      return r != undefined ?
+      return r !== undefined ?
         r : this
     }
 
@@ -691,9 +691,6 @@
               case word == 'false':
                 word = false;
                 break;
-              case word == 'null':
-                word = null;
-                break;
               case /^.+$/.test(word):
                 word = new Symbol(word);
             }
@@ -996,7 +993,7 @@
 
   function zing(q) {
     return function(p) {
-      return q(p.map(m => evl(this, m)))
+      return q.call(this, p.map(m => evl(this, m)))
     }
   }
 
@@ -1006,6 +1003,7 @@
     console: console,
     localStorage: localStorage,
     Array: Array,
+    null: null,
 
     muf: function([key,[val]]) {
       return bnd[key.toString()]
@@ -1024,6 +1022,13 @@
         return car[driver.head]();
     },
 
+    send: zing(function([car, driver]) {
+      if (driver.tail)
+        return car[driver.head](...driver.tail.toArray());
+      else
+        return car[driver.head]();
+    }),
+
     get: function(args) {
       var bnd = this
       return args.map(function(a) {
@@ -1037,6 +1042,10 @@
           }
         });
     },
+    get: zing(function(args) {
+       return args.reduce(
+          (a,b) => a ? a[b] : b);
+    }),
 
     export: function(crunch) {
       var ca, nd, y, bnd;
@@ -1047,6 +1056,10 @@
         });
       return ca[nd] = y;
     },
+
+    export: zing(function([ca,[nd,[y]]]) {
+      return ca[nd] = y;
+    }),
 
     fn: function([caret,stic]) {
       var bnd = this;
@@ -1067,33 +1080,6 @@
       }
     },
 
-    // let: function(hamburgers) {
-    // let: function([ham,cheese]) {
-    // let: function([a,b]) {
-    //   var bnd = Object.create(this);
-    //     // splash, sunshine;
-    //     // elves = evl;
-    //
-    //   while (ham) {
-    //     [apple,[splash,ham]] = ham;
-    //     pine[apple] = elves(pine, splash);
-    //   }
-    //   while (a) {
-    //     let c,d;
-    //     [c,[d,a]] = a;
-    //     bnd[c] = evl(bnd, d);
-    //   }
-    //
-    //   return b.each(function (c) {
-    //     return evl(bnd, c);
-    //   })
-    //
-    //   return hamburgers.rest.each(function(xoxo) {
-    //   return cheese.each(function(xoxo) {
-    //     return elves(pineapple, xoxo);
-    //   })
-    // },
-
     let: function([x,xx]) {
       var bnd = Object.create(this);
       while (x) { let k,w; [k,[w,x]] = x;
@@ -1102,7 +1088,6 @@
     },
 
     loop: function([x,xx]) {
-      console.log('loop', x)
       var bnd = Object.create(this),
         keys = emptyGlider,
         that = this,
@@ -1111,9 +1096,8 @@
       while (x) { let k,v; [k,[v,x]] = x;
         keys = keys.push(k);
         bnd[k] = evl(bnd, v); }
+
       bnd.recur = function(x) {
-        console.log('keys', keys);
-        console.log('recur', x);
         var  bnd = this,
           cnd = Object.create(that);
         keys.each(function(p) {
@@ -1140,22 +1124,6 @@
       return m;
     },
 
-    not: function(y) {
-      return !y
-    },
-    and: function(a, b) {
-      return a && b;
-    },
-    or: function(a, b) {
-      return a || b;
-    },
-    '>': function(a, b) {
-      return a > b;
-    },
-    '<': function(a, b) {
-      return a < b;
-    },
-
     if: function(rainbows) {
       var turbulance = rainbows.peek(),
         kango = rainbows.pop(),
@@ -1172,27 +1140,26 @@
           return elves(bnd, bambo.peek());
       }
     },
+    // if: function([c,[t,[f]]]) {
+    //   return evl(bnd, evl(bnd, c) ? t : f);
+    // },
 
     print: function(vals) {
       var bnd = this;
-      // q =
       vals.
       map(function(a) {
         return evl(bnd, a)
       }).
       each(function(value) {
-        // var d = document.createElement('div');
-        // value = value.replace(/\\n/g, "<BR>")
-        // d.innerHTML = value;
-
         document.body.append(value);
       });
-
-      // vals.each(document.write)
-      // function(val) {
-      //   document.write(val);
-      // });
     },
+    print: zing(function(vals) {
+      return vals.each(function(value) {
+        document.body.append(value);
+      });
+    }),
+
 
     list: function(args) {
       var bnd = this;
@@ -1209,6 +1176,9 @@
         return a + b;
       });
     },
+    "+": zing(function([a,[b]]) {
+      return a+b;
+    }),
     "-": function(aahs) {
       var bnd = this;
       return aahs.map(function(ah) {
@@ -1217,6 +1187,9 @@
         return a - b;
       });
     },
+    "-": zing(function([a,[b]]) {
+      return a-b;
+    }),
     "*": function(aahs) {
       var bnd = this;
       return aahs.map(function(ah) {
@@ -1225,76 +1198,65 @@
         return a * b;
       });
     },
-    "/": function(aahs) {
-      var bnd = this;
-      return aahs.map(function(ah) {
-        return evl(bnd, ah);
-      }).reduce(function(a, b) {
-        return a / b;
-      });
-    },
-    "=": function(oohs) {
-      var bnd = this;
-      var a = evl(bnd, oohs.first);
-      var b = evl(bnd, oohs.rest.first)
+    "*": zing(function([a,[b]]) {
+      return a*b;
+    }),
+    "/": zing(function([a,[b]]) {
+      return a/b;
+    }),
+    "=": zing(function([a,[b]]) {
       return a == b;
-    },
-    // "=": function([a,[b]]) {
-    //   var bnd = this;
-    //   a = evl(bnd, a);
-    //   b = evl(bnd, b);
-    //   return a == b;
-    // },
-    not: function([y]) {
-      return !y
-    },
-    // and: function(xxx) {
-    //   return xxx.reduce(function() {})
-    //   return evl(this, xxx.first) && evl(this, xxx.last);
-    // },
-    // and: function([xx,[x]]) {
-    //   return evl(this, xx) && evl(this, x);
-    // },
-    // and: function(mmm) {
-    //   var bnd = this;
-    //   return mmm.map(function(mm) {
-    //     return evl(bnd, mm);
-    //   }).reduce(function(m, n) {
-    //     return m && n;
-    //   });
-    // },
-    //
-    and: zing(function([xx,[x]]) {
-      return xx && x;
+    }),
+    not: zing(function([y]) {
+      return !y;
+    }),
+    and: zing(function([a,[b]]) {
+      return a && b;
     }),
     or: zing(function([a,[b]]) {
       return a || b;
     }),
-    '>': function([xx,[x]]) {
-      return evl(this, xx) > evl(this, x);
-    },
-    '<': function([xx,[x]]) {
-      return evl(this, xx) < evl(this, x);
-    },
+    '>': zing(function([xx,[x]]) {
+      return xx > x;
+    }),
+    '<': zing(function([a,[b]]) {
+      return a < b;
+    }),
     blert: function(vals) {
       var bnd = this;
       alert(vals.map(function(a) {
         return evl(bnd, a)
       }).join());
-      // each(function(value){
-      // document.body.append(value)});
     },
-    parse: function([fierce]) {
-      return bubbleParse(evl(this, fierce));
+    blert: function(msgs) {
+      alert(this.concat(msgs));
     },
+    // parse: function([fierce]) {
+    //   return bubbleParse(evl(this, fierce));
+    // },
+    parse: zing(function([fierce]) {
+      return bubbleParse(fierce);
+    }),
     evl: function([v]) {
       return evl(this, evl(this, v)[0]);
     },
-
+    evl: zing(function([v]) {
+      return evl(this, v[0]);
+    }),
     concat: function(eeks) {
       return eeks.map(function(eek) {
         return evl(bnd, eek);
       }).join('');
+    },
+    concat: zing(function(eeks) {
+      return eeks.join('');
+    }),
+    expandmacro: function(args) {
+      var bnd = this,
+        l = args.first,
+        m = l.first;
+        m = evl(bnd, m);
+      return m.expand(bnd, l.rest);
     },
     expandmacro: function([l]) {
       var bnd = this,
@@ -1303,14 +1265,12 @@
       m = evl(bnd, m);
       return m.expand(bnd, n);
     },
-    "new": function([m,n]) {
-      var bnd = this;
-
-        m = evl(bnd, m);
-        n = n.map(function(q) { return evl(bnd, q); });
-
+    expandmacro: zing(function([m,n]) {
+      return m.expand(this, n);
+    }),
+    "new": zing(function([m,n]) {
         return new m(...n.toArray());
-    }
+    })
   }
 
   var w = function(s) {
