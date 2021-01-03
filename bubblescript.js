@@ -1097,18 +1097,18 @@
         keys = keys.push(k);
         bnd[k] = evl(bnd, v); }
 
-      bnd.recur = function(x) {
-        var _bnd = Object.create(bnd),
-          r = keys,
-          j,w;
-        while(x) {
-          [j,x] = x;
-          [w,r] = r;
-          _bnd[w] = evl(this, j);
+      bnd.recur = zing(function(a) {
+        var b = keys,
+          c = Object.create(bnd);
+        while(a && b) {
+          let key, val;
+          [key,b] = b;
+          [val,a] = a;
+          c[key] = val;
         }
         recurCalled = true;
-        return _bnd;
-      }
+        return c;
+      })
 
       do {
         recurCalled = false;
