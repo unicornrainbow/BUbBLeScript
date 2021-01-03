@@ -1089,43 +1089,6 @@
 
     loop: function([x,xx]) {
       var bnd = Object.create(this),
-        keys = emptyGlider,
-        that = this,
-        m, recurCalled;
-
-      while (x) { let k,v; [k,[v,x]] = x;
-        keys = keys.push(k);
-        bnd[k] = evl(bnd, v); }
-
-      bnd.recur = function(x) {
-        var  bnd = this,
-          cnd = Object.create(that);
-        keys.each(function(p) {
-          if (x.peek()) {
-            cnd[p] = evl(bnd, x.peek());
-          } else {
-            cnd[p] = bnd[p];
-          }
-          x = x.pop()
-        })
-        recurCalled = true;
-        return cnd;
-      }
-
-      do {
-        recurCalled = false;
-        m = xx.each(z => evl(bnd, z));
-        console.log('recur called', recurCalled);
-        if (recurCalled) {
-          m.recur = bnd.recur;
-          bnd = m;
-        }
-      } while(recurCalled);
-      return m;
-    },
-
-    loop: function([x,xx]) {
-      var bnd = Object.create(this),
         cnd = bnd,
         keys = emptyGlider,
         m, recurCalled;
@@ -1135,14 +1098,14 @@
         bnd[k] = evl(bnd, v); }
 
       bnd.recur = function(x) {
-        var  that = this,
-          _bnd = Object.create(bnd);
-        keys.each(function(p) {
-          if (x.peek()) {
-            _bnd[p] = evl(that, x.peek());
-          }
-          x = x.pop()
-        })
+        var _bnd = Object.create(bnd),
+          r = keys,
+          j,w;
+        while(x) {
+          [j,x] = x;
+          [w,r] = r;
+          _bnd[w] = evl(this, j);
+        }
         recurCalled = true;
         return _bnd;
       }
@@ -1150,7 +1113,6 @@
       do {
         recurCalled = false;
         m = xx.each(z => evl(cnd, z));
-        console.log('recur called', recurCalled);
         if (recurCalled) {
           cnd = m;
         }
