@@ -149,8 +149,8 @@
     }
 
     *[window.Symbol.iterator]() {
-      yield this.first;
-      yield this.rest;
+      yield this.peek();
+      yield this.pop();
     }
 
   }
@@ -179,7 +179,25 @@
   }
   emptyList = new EmptyList;
 
-  class Glider extends List {
+  class Glider {
+
+    constructor(...supercalifragalisticexpealidocious) {
+      this.head = supercalifragalisticexpealidocious[0];
+      this.tail = supercalifragalisticexpealidocious[1];
+      if (supercalifragalisticexpealidocious.length > 2){
+        this.head = supercalifragalisticexpealidocious.pop();
+        this.tail = Glider.from(supercalifragalisticexpealidocious);
+      }
+    }
+
+    static from(a) {
+      a = Array.from(a);
+      var head = a.pop(),
+         tail = a;
+       if (tail.length > 0)
+           return new Glider(head, this.from(tail));
+       return new Glider(head);
+    }
 
     peek() {
       return this.head;
@@ -291,15 +309,31 @@
     reduce(fn, memo) {
       if (this.tail)
         memo = this.tail.reduce(fn, memo);
-      return fn(this.head, memo);
+      return fn(memo, this.head);
     }
 
+    reverse() {
+      if (!this.tail) return this;
+      var glider = new Glider(this.head);
+      return this.tail.reduce(function(memo, i) {
+        return memo.push(i);
+      }, glider);
+    }
     each(fn) {
       if (this.tail)
         this.tail.each(fn);
       fn(this.head);
     }
 
+    *[window.Symbol.iterator]() {
+      yield this.peek();
+      yield this.pop();
+    }
+
+    *[window.Symbol.iterator]() {
+      yield this.first;
+      yield this.rest || emptyGlider;
+    }
   }
 
   class EmptyGlider extends Glider {
@@ -353,9 +387,7 @@
     resolve(bnd) {
       var r = this.resolveRoot(bnd)
       if (r) r = r[this.fn];
-      // return r;
-      return r !== undefined ?
-        r : this
+      return r;
     }
 
   }
@@ -884,7 +916,7 @@
   }
 
   function evl(bnd, exp) {
-    switch (exp.constructor) {
+    switch (exp && exp.constructor) {
       case Symbol:
         return exp.resolve(bnd)
       case List: {
@@ -1083,7 +1115,8 @@
 
     let: function([x,xx]) {
       var bnd = Object.create(this);
-      while (x) { let k,w; [k,[w,x]] = x;
+      // x = x.reverse();
+      while (!x.isEmpty) { let k,w; [k,[w,x]] = x;
         bnd[k] = evl(bnd, w); }
       return xx.each(z => evl(bnd, z));
     },
@@ -1094,14 +1127,15 @@
         keys = emptyGlider,
         m, recurCalled;
 
-      while (x) { let k,v; [k,[v,x]] = x;
+      // x = x.reverse();
+      while (!x.isEmpty) { let k,v; [k,[v,x]] = x;
         keys = keys.push(k);
         bnd[k] = evl(bnd, v); }
 
       bnd.recur = zing(function(a) {
         var b = keys,
           c = Object.create(bnd);
-        while(a && b) {
+        while(!a.isEmpty && !b.isEmpty) {
           let key, val;
           [key,b] = b;
           [val,a] = a;
@@ -1137,20 +1171,10 @@
           return elves(bnd, bambo.peek());
       }
     },
-    // if: function([c,[t,[f]]]) {
-    //   return evl(bnd, evl(bnd, c) ? t : f);
-    // },
-
-    print: function(vals) {
-      var bnd = this;
-      vals.
-      map(function(a) {
-        return evl(bnd, a)
-      }).
-      each(function(value) {
-        document.body.append(value);
-      });
+    if: function([c,[t,[f]]]) {
+      return evl(this, evl(this, c) ? t : f);
     },
+
     print: zing(function(vals) {
       return vals.each(function(value) {
         document.body.append(value);
@@ -1164,37 +1188,12 @@
         return evl(bnd, arg);
       }).reverse();
     },
-
-    "+": function(aahs) {
-      var bnd = this;
-      return aahs.map(function(ah) {
-        return evl(bnd, ah);
-      }).reduce(function(a, b) {
-        return a + b;
-      });
-    },
     "+": zing(function([a,[b]]) {
       return a+b;
     }),
-    "-": function(aahs) {
-      var bnd = this;
-      return aahs.map(function(ah) {
-        return evl(bnd, ah);
-      }).reduce(function(a, b) {
-        return a - b;
-      });
-    },
     "-": zing(function([a,[b]]) {
       return a-b;
     }),
-    "*": function(aahs) {
-      var bnd = this;
-      return aahs.map(function(ah) {
-        return evl(bnd, ah);
-      }).reduce(function(a, b) {
-        return a * b;
-      });
-    },
     "*": zing(function([a,[b]]) {
       return a*b;
     }),
@@ -1219,49 +1218,18 @@
     '<': zing(function([a,[b]]) {
       return a < b;
     }),
-    blert: function(vals) {
-      var bnd = this;
-      alert(vals.map(function(a) {
-        return evl(bnd, a)
-      }).join());
-    },
     blert: function(msgs) {
       alert(this.concat(msgs));
     },
-    // parse: function([fierce]) {
-    //   return bubbleParse(evl(this, fierce));
-    // },
     parse: zing(function([fierce]) {
       return bubbleParse(fierce);
     }),
-    evl: function([v]) {
-      return evl(this, evl(this, v)[0]);
-    },
     evl: zing(function([v]) {
       return evl(this, v[0]);
     }),
-    concat: function(eeks) {
-      return eeks.map(function(eek) {
-        return evl(bnd, eek);
-      }).join('');
-    },
     concat: zing(function(eeks) {
       return eeks.join('');
     }),
-    expandmacro: function(args) {
-      var bnd = this,
-        l = args.first,
-        m = l.first;
-        m = evl(bnd, m);
-      return m.expand(bnd, l.rest);
-    },
-    expandmacro: function([l]) {
-      var bnd = this,
-          [m,n] = l;
-
-      m = evl(bnd, m);
-      return m.expand(bnd, n);
-    },
     expandmacro: zing(function([m,n]) {
       return m.expand(this, n);
     }),
