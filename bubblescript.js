@@ -1198,6 +1198,9 @@
     if: function([c,[t,[f]]]) {
       return evl(this, evl(this, c) ? t : f);
     },
+    // unless: function([c,[t,[f]]]) {
+    //   return evl(this, evl(this, c) ? f : t);
+    // },
 
     print: zing(function(vals) {
       return vals.each(function(value) {
@@ -1254,9 +1257,9 @@
     concat: zing(function(eeks) {
       return eeks.join('');
     }),
-    expandmacro: zing(function([m,n]) {
-      return m.expand(this, n);
-    }),
+    expandmacro: function([m,n]) {
+      return evl(this,m).expand(this, n);
+    },
     "new": zing(function([m,n]) {
         return new m(...n.toArray());
     })
@@ -1302,6 +1305,28 @@
      w("mufn peek [a b] (send a 'peek b)");
      // mufn('peek',[a,b],l(send, a, q(peek),b))
      w("mufn pop [a b] (send a 'pop b)");
+
+     w("muf mufmacro (macro [name args body]\n" +
+     "  (list 'muf name\n" +
+     "    (list 'macro args body)))\n");
+
+     w("mufmacro unless [c t f],\n" +
+       "   (list 'if c f t)");
+
+     w("mufn reduce [fn list memo], \n" +
+       "  (loop [list list\n" +
+       "         memo memo]\n" +
+       "  (if (not list.isEmpty)\n" +
+       "    (recur (pop list) (fn (peek list) memo))\n" +
+       "      memo))");
+     // evl(bnd,
+     //   list(mufn, reduce, glider(fn, _list, memo),
+     //     list(loop, glider(_list, _list, memo, memo),
+     //       list(if, list(s('not'), s('list.isEmpty')),
+     //          list(recur, list(pop, _list),
+     //             list(fn, list(peek, _list), memo)),
+     //             memo))));
+
 
   })();
 

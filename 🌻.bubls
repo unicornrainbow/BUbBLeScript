@@ -9,10 +9,6 @@
   muf get-id (fn [a]
     (document.getElementById a))
 
-  muf mufmacro (macro [name args body]
-    (list 'muf name
-      (list 'macro args body)))
-
   mufmacro dgi [a],
     (list 'document.getElementById a)
 
@@ -197,19 +193,19 @@
   mufn map [f & a],
      (loop [q (list)
             a (reverse a)]
-       (if (not a.isEmpty)
+       (unless a.isEmpty
          (recur (push q (f (peek a)))
             (pop a))
          q))
 
   //mufn 🙈 [a b c],
 
-  mufn reduce [fn list memo],
-     (loop [list list
-            memo memo]
-       (if (not list.isEmpty)
-         (recur (pop list) (fn (peek list) memo))
-         memo))
+  // mufn reduce [fn list memo],
+  //    (loop [list list
+  //           memo memo]
+  //      (if (not list.isEmpty)
+  //        (recur (pop list) (fn (peek list) memo))
+  //        memo))
 
   mufn wrap-list [],
     (clear (+ "(" (+ (read) ")")))
