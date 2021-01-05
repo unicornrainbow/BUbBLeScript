@@ -14,6 +14,11 @@
       parse() {}                //             {} ()esrap
   }                             //                            {
 
+
+  // window.onerror = function(e) {
+  //   console.log(e);
+  // }
+
   var emptyList,
     emptyGlider;
 
@@ -312,6 +317,24 @@
       return fn(memo, this.head);
     }
 
+    reduce(fn, memo) {
+      var a, b, c = this;
+      if (memo == undefined) {
+        a = this.head;
+        c = this.tail;
+        if (!c) {
+          return a;
+        } else {
+          b = c.head;
+          c = c.tail;
+          memo = fn(a, b);
+          if (!c)
+            return memo;
+        }
+      }
+      return c.push(memo).reduce(fn);
+    }
+
     reverse() {
       if (!this.tail) return this;
       var glider = new Glider(this.head);
@@ -328,11 +351,6 @@
     *[window.Symbol.iterator]() {
       yield this.peek();
       yield this.pop();
-    }
-
-    *[window.Symbol.iterator]() {
-      yield this.first;
-      yield this.rest || emptyGlider;
     }
   }
 
@@ -1115,7 +1133,8 @@
 
     let: function([x,xx]) {
       var bnd = Object.create(this);
-      // x = x.reverse();
+      x = x.reverse();
+      console.log('let', x.toString());
       while (!x.isEmpty) { let k,w; [k,[w,x]] = x;
         bnd[k] = evl(bnd, w); }
       return xx.each(z => evl(bnd, z));
@@ -1127,14 +1146,19 @@
         keys = emptyGlider,
         m, recurCalled;
 
-      // x = x.reverse();
+      x = x.reverse();
+      console.log('loop', x.toString());
       while (!x.isEmpty) { let k,v; [k,[v,x]] = x;
         keys = keys.push(k);
         bnd[k] = evl(bnd, v); }
 
+      // keys = keys.reverse()
+      console.log('loop keys', keys);
+
       bnd.recur = zing(function(a) {
         var b = keys,
           c = Object.create(bnd);
+        a = a.reverse();
         while(!a.isEmpty && !b.isEmpty) {
           let key, val;
           [key,b] = b;

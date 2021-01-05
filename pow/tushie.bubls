@@ -115,7 +115,7 @@
   // window.avl -> window.addEventListener ucp -> (unique character pattern)
   window.addEventListener 'keydown,
     (jsfn [e]
-      (window.console.log e.key)
+      // (window.console.log e.key)
       (if (= e.key "Backspace")
         (do (e.preventDefault)
             (backspace))
@@ -177,6 +177,22 @@
         (recur (pop a)
              (push b (peek a)))
          b)))
+
+  (mufn greverse [a]
+    (loop [a a b []]
+      (console.log (a.toString))
+      (if (not a.isEmpty)
+        (do
+          (console.log (peek a))
+          (recur (pop a)
+             (push b (peek a))))
+         a)))
+
+  //muf unless []
+
+  mufn grev [a],
+    (push [(peek a)] 6)
+
 
   mufn map [f & a],
      (loop [q (list)
