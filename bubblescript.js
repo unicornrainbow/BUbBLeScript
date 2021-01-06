@@ -940,6 +940,7 @@
       case List: {
         let s = exp.peek()
         if (s instanceof Symbol) {
+          console.log('->', exp.toString());
           if (s.callPattern == 1) {
             //  x or x/x or x.x/x
             let q = evl(bnd, s);
@@ -1198,9 +1199,9 @@
     if: function([c,[t,[f]]]) {
       return evl(this, evl(this, c) ? t : f);
     },
-    // unless: function([c,[t,[f]]]) {
-    //   return evl(this, evl(this, c) ? f : t);
-    // },
+    unless: function([u,[v,[w]]]) {
+      return evl(this,!evl(this,u)?v:w);
+    },
 
     print: zing(function(vals) {
       return vals.each(function(value) {
@@ -1310,15 +1311,15 @@
      "  (list 'muf name\n" +
      "    (list 'macro args body)))\n");
 
-     w("mufmacro unless [c t f],\n" +
-       "   (list 'if c f t)");
+     // w("mufmacro unless [c t f],\n" +
+     //   "   (list 'if c f t)");
 
      w("mufn reduce [fn list memo], \n" +
        "  (loop [list list\n" +
        "         memo memo]\n" +
-       "  (if (not list.isEmpty)\n" +
-       "    (recur (pop list) (fn (peek list) memo))\n" +
-       "      memo))");
+       "    (unless list.isEmpty\n" +
+       "      (recur (pop list) (fn (peek list) memo))\n" +
+       "        memo))");
      // evl(bnd,
      //   list(mufn, reduce, glider(fn, _list, memo),
      //     list(loop, glider(_list, _list, memo, memo),
